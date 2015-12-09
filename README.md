@@ -27,7 +27,7 @@ Demo App:
 
 Usage:
 ========
-Set `title` property in router's or controller's configuration:
+Set `title` property in route's or group's configuration:
 ```coffeescript
 # Set default document.title value in 
 # case router has no title property
