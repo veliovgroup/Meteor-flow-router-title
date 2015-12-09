@@ -1,4 +1,4 @@
-Reactive page title for meteor within iron-router
+Reactive page title for meteor within flow-router
 ========
 Change `document.title` on the fly within [flow-router](https://github.com/kadirahq/flow-router)
 
