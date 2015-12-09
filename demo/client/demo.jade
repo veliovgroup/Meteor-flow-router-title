@@ -1,0 +1,61 @@
+head
+  title Hard-coded title
+
+template(name='_layout')
+  .container
+    .row
+      .col-md-12
+        h3 ostrio:flow-router-title demo
+        ul
+          li
+            a(href='https://github.com/VeliovGroup/Meteor-flow-router-title') On GitHub
+          li
+            a(href='https://atmospherejs.com/ostrio/flow-router-title') On Atmosphere
+        .alert.alert-info
+          | {{>Template.dynamic template=content}}
+        h5 Pages:
+        ul
+          li
+            a(href="{{pathFor 'index'}}") Index
+          li
+            a(href="{{pathFor 'secondPage'}}") Second Page, title set via Controller
+          li
+            a(href="{{pathFor 'thirdPage' something=rand}}")
+              | Third Page with parameter "<b>{{rand}}</b>"
+          li
+            a(href="{{pathFor 'groupPage1'}}")
+              | Group page, with group-level title
+          li
+            a(href="{{pathFor 'groupPage2'}}")
+              | Group page, with group-level title prefix
+
+template(name='index')
+  p
+    b Index Page
+    | , title should be: "Default Title"
+
+template(name='secondPage')
+  p
+    b Second Page
+    | , title should be: "Second Page Title"
+
+template(name='thirdPage')
+  p
+    b Third Page
+    | , title should be: "Third Page Title > <b>{{rand}}</b>"
+
+template(name='groupPage1')
+  p
+    b Group Page (no prefix)
+    | , title should be: "GROUP TITLE"
+
+template(name='groupPage2')
+  p
+    b Group Page (with prefix)
+    | , title should be: "Group > Group Page 2"
+
+template(name='_404')
+  // response:status-code=404
+  .well(style="text-align:center")
+    h1 404
+    h3 Whoops, page not found
