@@ -1,52 +1,63 @@
-hardCodedTitle = null
-title = new ReactiveVar null
+class FlowRouterTitle
+  constructor: (@router) -> 
+    _self = @
+    title = new ReactiveVar null
+    hardCodedTitle = null
 
-title.set = (newValue) ->
-  oldValue = @curValue
-  if _.isEqual(oldValue, newValue)
-    return
-  else
-    unless hardCodedTitle
-      hardCodedTitle = _.clone document.title
-    document.title = newValue
-    @curValue = newValue
+    title.set = (newValue) ->
+      oldValue = @curValue
+      if _.isEqual(oldValue, newValue)
+        return
+      else
+        unless hardCodedTitle
+          hardCodedTitle = _.clone document.title
+        document.title = newValue
+        @curValue = newValue
 
-titleHandler = (context) ->
-  defaultTitle = null
-  if FlowRouter.globals.length
-    for option in FlowRouter.globals
-      if _.isObject(option) and _.has option, 'title'
-        defaultTitle = option.title
-  if context.route?.group?.options
-    _routeTitle       = context.route.options?.title
-    _routeTitle       = _routeTitle.call _.extend context, {query: context.queryParams} if _.isFunction _routeTitle
+    @titleHandler = (context, redirect, stop, data) =>
+      defaultTitle = null
+      _context     = _.extend context, {query: context.queryParams}
+      _arguments   = [context.query, context.queryParams, data]
 
-    _groupTitle       = context.route.group.options?.title
-    _groupTitle       = _groupTitle.call _.extend context, {query: context.queryParams} if _.isFunction _groupTitle
+      if @router.globals.length
+        for option in @router.globals
+          if _.isObject(option) and _.has option, 'title'
+            defaultTitle = option.title
 
-    _groupTitlePrefix = context.route.group.options?.titlePrefix
-    _groupTitlePrefix = _groupTitlePrefix.call _.extend context, {query: context.queryParams} if _.isFunction _groupTitlePrefix
+      if context.route?.group?.options
+        _routeTitle       = context.route.options?.title
+        _routeTitle       = _routeTitle.apply _context, _arguments if _.isFunction _routeTitle
 
-    unless _routeTitle
-      _title = _groupTitle or defaultTitle or hardCodedTitle
-    else if _routeTitle and _groupTitlePrefix
-      _title = _groupTitlePrefix + _routeTitle
-    else
-      _title = _routeTitle or defaultTitle or hardCodedTitle
+        _groupTitle       = context.route.group.options?.title
+        _groupTitle       = _groupTitle.apply _context, _arguments if _.isFunction _groupTitle
 
-  else
-    _title = context.route.options?.title or defaultTitle or hardCodedTitle
+        _groupTitlePrefix = context.route.group.options?.titlePrefix
+        _groupTitlePrefix = _groupTitlePrefix.apply _context, _arguments if _.isFunction _groupTitlePrefix
 
-  _title = _title.call _.extend context, {query: context.queryParams} if _.isFunction _title
+        unless _routeTitle
+          _title = _groupTitle or defaultTitle or hardCodedTitle
+        else if _routeTitle and _groupTitlePrefix
+          _title = _groupTitlePrefix + _routeTitle
+        else
+          _title = _routeTitle or defaultTitle or hardCodedTitle
 
-  if _.isString _title
-    title.set _title
-    context.context.title = _title if context?.context
+      else
+        _title = context.route.options?.title or defaultTitle or hardCodedTitle
 
-FlowRouter.triggers.enter [titleHandler]
+      _title = _title.apply _context, _arguments if _.isFunction _title
 
-_orig = FlowRouter._notfoundRoute
-FlowRouter._notfoundRoute = (context) ->
-  if FlowRouter?.notFound?.title
-    titleHandler if not _.isEmpty @_current then _.extend @_current, route: options: title: FlowRouter.notFound.title else route: options: title: FlowRouter.notFound.title
-  _orig.apply @, arguments
+      if _.isString _title
+        title.set _title
+        context.context.title = _title if context?.context
+
+    @router.triggers.enter [@titleHandler]
+
+    _orig = @router._notfoundRoute
+    @router._notfoundRoute = (context) ->
+      _context = route: options: {}
+      _context.route.options.title = _self.router.notFound?.title
+      if not _.isEmpty _self.router._current
+        _self.titleHandler _.extend _self.router._current, _context
+      else
+        _self.titleHandler _context
+      _orig.apply @, arguments

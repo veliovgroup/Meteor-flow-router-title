@@ -1,6 +1,8 @@
-Reactive page title for meteor within flow-router
+Reactive page title for Meteor within flow-router-extra
 ========
-Change `document.title` on the fly within [flow-router](https://github.com/kadirahq/flow-router)
+Change `document.title` on the fly within [flow-router-extra](https://github.com/VeliovGroup/flow-router)
+
+__!!!Important Notice: This package oriented to work with [flow-router-extra](https://github.com/VeliovGroup/flow-router).__ It is extended fork of [kadira:flow-router](https://github.com/kadirahq/flow-router).
 
 This package supports `title` option defined in list below, ordered by prioritization:
  - `FlowRouter.route()` [*overrides all*]
@@ -17,7 +19,7 @@ This package tested and works like a charm with most common Meteor's packages:
 Install:
 ========
 ```shell
-meteor add ostrio:iron-router-title
+meteor add ostrio:flow-router-title
 ```
 
 Demo App:
@@ -27,6 +29,16 @@ Demo App:
 
 Usage:
 ========
+You need to initialize `FlowRouterTitle` class by passing `FlowRouter` object. Right after creating all your routes:
+```coffeescript
+FlowRouter.route '/', 
+  action: () -> ...
+  title: "Title"
+...
+
+new FlowRouterTitle FlowRouter
+```
+
 Set `title` property in route's or group's configuration:
 ```coffeescript
 # Set default document.title value in 
@@ -36,6 +48,15 @@ FlowRouter.globals.push title: 'Default title'
 FlowRouter.route '/me/account',
   name: 'account'
   title: 'My Account'
+```
+
+Use function context (with [`data`](https://github.com/VeliovGroup/flow-router#data-hook) hook):
+```coffeescript
+FlowRouter.route '/post/:_id',
+  name: 'post'
+  waitOn: (params) -> [Meteor.subscribe('post', params._id)]
+  data: (params) -> Collection.Posts.findOne(params._id)
+  title: (params, query, data = {}) -> if data then data.title else '404: Page not found'
 ```
 
 Use group context:
@@ -58,7 +79,7 @@ FlowRouter.route '/me/account',
 # Use params from route
 FlowRouter.route '/page/:something',
   name: 'somePage'
-  title: -> "Page #{@params.something}"
+  title: (params) -> "Page #{params.something}"
 ```
 
 All examples above is supported to be a function or text:
