@@ -15,47 +15,171 @@ template(name='_layout')
           | {{>Template.dynamic template=content}}
         h5 Pages:
         ul
-          li
-            a(href="{{pathFor 'index'}}") Index
-          li
-            a(href="{{pathFor 'secondPage'}}") Second Page, title set via Controller
-          li
-            a(href="{{pathFor 'thirdPage' something=rand}}")
-              | Third Page with parameter "<b>{{rand}}</b>"
-          li
-            a(href="{{pathFor 'groupPage1'}}")
-              | Group page, with group-level title
-          li
-            a(href="{{pathFor 'groupPage2'}}")
-              | Group page, with group-level title prefix
+          li: a(href="{{pathFor 'index'}}") Index
+          li: a(href="{{pathFor 'secondPage'}}") Second Page, title set via Controller
+          li: a(href="{{pathFor 'thirdPage' something=rand}}") Third Page with parameter "<b>{{rand}}</b>"
+          li: a(href="{{pathFor 'groupPage1'}}") Group page, with group-level title
+          li: a(href="{{pathFor 'groupPage2'}}") Group page, with group-level title prefix
+          li: a(href="{{pathFor 'post'}}") Demo post, with data from Mongo
+          li: a(href="/nonexistent/route") 404: Non-existent route
 
 template(name='index')
-  p
-    b Index Page
-    | , title should be: "Default Title"
+  +markdown
+    __Index Page__, title should be: "*Default Title*"
+
+    ##### Code:
+    ```javascript
+    FlowRouter.route('/', {
+      name: 'index',
+      action: function() {
+        return BlazeLayout.render('_layout', {
+          content: 'index',
+          rand: Random.id()
+        });
+      }
+    });
+    ```
 
 template(name='secondPage')
-  p
-    b Second Page
-    | , title should be: "Second Page Title"
+  +markdown
+    __Second Page__, title should be: "*Second Page Title*"
+
+    ##### Code:
+    ```javascript
+    FlowRouter.route('/secondPage', {
+      name: 'secondPage',
+      title: 'Second Page title',
+      action: function() {
+        return BlazeLayout.render('_layout', {
+          content: 'secondPage',
+          rand: Random.id()
+        });
+      }
+    });
+    ```
 
 template(name='thirdPage')
-  p
-    b Third Page
-    | , title should be: "Third Page Title > <b>{{rand}}</b>"
+  +markdown
+    __Third Page__, title should be: "*Third Page Title > <b>{{rand}}</b>*"
+
+    ##### Code:
+    ```javascript
+    FlowRouter.route('/thirdPage/:something', {
+      name: 'thirdPage',
+      title: function() {
+        return "Third Page Title > " + this.params.something;
+      },
+      action: function(params, query) {
+        return BlazeLayout.render('_layout', {
+          content: 'thirdPage',
+          rand: params.something
+        });
+      }
+    });
+    ```
 
 template(name='groupPage1')
-  p
-    b Group Page (no prefix)
-    | , title should be: "GROUP TITLE"
+  +markdown
+    __Group Page (no prefix)__, title should be: "*GROUP TITLE*"
+
+    ##### Code:
+    ```javascript
+    var group = FlowRouter.group({
+      prefix: '/group',
+      title: "GROUP TITLE",
+      titlePrefix: 'Group > '
+    });
+
+    group.route('/groupPage1', {
+      name: 'groupPage1',
+      action: function(params, query) {
+        return BlazeLayout.render('_layout', {
+          content: 'groupPage1',
+          rand: Random.id()
+        });
+      }
+    });
+    ```
 
 template(name='groupPage2')
-  p
-    b Group Page (with prefix)
-    | , title should be: "Group > Group Page 2"
+  +markdown
+    __Group Page (with prefix)__, title should be: "*Group > Group Page 2*"
+
+    ##### Code:
+    ```javascript
+    var group = FlowRouter.group({
+      prefix: '/group',
+      title: "GROUP TITLE",
+      titlePrefix: 'Group > '
+    });
+
+    group.route('/groupPage2', {
+      name: 'groupPage2',
+      title: 'Group page 2',
+      action: function(params, query) {
+        return BlazeLayout.render('_layout', {
+          content: 'groupPage2',
+          rand: Random.id()
+        });
+      }
+    });
+    ```
+
+template(name='post')
+  +markdown
+    __Demo post, data fetched from Mongo__, title should be: "*{{post.title}}*"
+
+    ### {{post.title}}
+
+    {{post.text}}
+
+    ##### Code:
+    ```javascript
+    FlowRouter.route('/post', {
+      name: 'post',
+      title: function(params, query, post) {
+        return post.title;
+      },
+      action: function(params, query, post) {
+        return BlazeLayout.render('_layout', {
+          content: 'post',
+          post: post,
+          rand: Random.id()
+        });
+      },
+      waitOn: function() {
+        return [Meteor.subscribe('posts')];
+      },
+      data: function() {
+        return Collections.posts.findOne();
+      },
+      whileWaiting: function() {
+        return BlazeLayout.render('_layout', {
+          content: '_loading'
+        });
+      }
+    });
+    ```
+
+template(name="_loading")
+  center: h4 Loading data from Mongo...
 
 template(name='_404')
   // response:status-code=404
   .well(style="text-align:center")
     h1 404
     h3 Whoops, page not found
+
+  +markdown
+    ##### Code:
+    ```javascript
+    FlowRouter.notFound = {
+      action: function() {
+        return BlazeLayout.render('_layout', {
+          content: '_404',
+          rand: Random.id()
+        });
+      },
+      title: '404: Page not found'
+    };
+    ```
