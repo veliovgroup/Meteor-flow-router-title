@@ -16,7 +16,7 @@ template(name='_layout')
         h5 Pages:
         ul
           li: a(href="{{pathFor 'index'}}") Index
-          li: a(href="{{pathFor 'secondPage'}}") Second Page, title set via Controller
+          li: a(href="{{pathFor 'secondPage'}}") Second Page
           li: a(href="{{pathFor 'thirdPage' something=rand}}") Third Page with parameter "<b>{{rand}}</b>"
           li: a(href="{{pathFor 'groupPage1'}}") Group page, with group-level title
           li: a(href="{{pathFor 'groupPage2'}}") Group page, with group-level title prefix

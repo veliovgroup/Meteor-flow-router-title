@@ -10,7 +10,7 @@ ecmascript-runtime@0.2.6
 ejson@1.0.7
 meteor@1.1.10
 ostrio:flow-router-extra@2.10.1
-ostrio:flow-router-title@2.0.1
+ostrio:flow-router-title@2.0.2
 promise@0.5.1
 random@1.0.5
 reactive-dict@1.1.3

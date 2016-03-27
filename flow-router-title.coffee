@@ -5,10 +5,7 @@ class FlowRouterTitle
     hardCodedTitle = null
 
     title.set = (newValue) ->
-      oldValue = @curValue
-      if _.isEqual(oldValue, newValue)
-        return
-      else
+      if @curValue isnt newValue
         unless hardCodedTitle
           hardCodedTitle = _.clone document.title
         document.title = newValue
@@ -17,7 +14,7 @@ class FlowRouterTitle
     @titleHandler = (context, redirect, stop, data) =>
       defaultTitle = null
       _context     = _.extend context, {query: context.queryParams}
-      _arguments   = [context.query, context.queryParams, data]
+      _arguments   = [context.params, context.queryParams, data]
 
       if @router.globals.length
         for option in @router.globals

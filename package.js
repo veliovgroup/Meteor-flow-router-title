@@ -1,6 +1,6 @@
 Package.describe({
   name: 'ostrio:flow-router-title',
-  version: '2.0.1',
+  version: '2.0.2',
   summary: 'Change document.title (page title) on the fly within flow-router',
   git: 'https://github.com/VeliovGroup/Meteor-flow-router-title',
   documentation: 'README.md'
