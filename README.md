@@ -115,9 +115,9 @@ FlowRouter.route('/page/:something', {
 ```
 
 All examples above is supported to be a function or text:
- - `FlowRouter.globals.push([{title: function(){...}}])`
- - `FlowRouter.globals.push([{title: 'Title text'}])`
- - `FlowRouter.group([{title: function(){...}, titlePrefix: function(){...}}])`
- - `FlowRouter.group([{title: 'Title text', titlePrefix: 'Title prefix text'}])`
- - `FlowRouter.route('/path', [{title: function(){...}}])`
- - `FlowRouter.route('/path', [{title: 'Title text'}])`
+ - `FlowRouter.globals.push({title: function(){...}})`
+ - `FlowRouter.globals.push({title: 'Title text'})`
+ - `FlowRouter.group({title: function(){...}, titlePrefix: function(){...}})`
+ - `FlowRouter.group({title: 'Title text', titlePrefix: 'Title prefix text'})`
+ - `FlowRouter.route('/path', {title: function(){...}})`
+ - `FlowRouter.route('/path', {title: 'Title text'})`
