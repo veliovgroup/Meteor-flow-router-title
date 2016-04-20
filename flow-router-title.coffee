@@ -1,13 +1,13 @@
 class FlowRouterTitle
   constructor: (@router) -> 
     _self = @
-    title = new ReactiveVar null
-    hardCodedTitle = null
+    hardCodedTitle = document.title or null
+    title = new ReactiveVar hardCodedTitle
 
     title.set = (newValue) ->
       if @curValue isnt newValue
         unless hardCodedTitle
-          hardCodedTitle = _.clone document.title
+          hardCodedTitle = document.title
         document.title = newValue
         @curValue = newValue
 
