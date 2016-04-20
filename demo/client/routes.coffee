@@ -38,4 +38,13 @@ FlowRouter.route '/post',
   data: -> Collections.posts.findOne()
   whileWaiting: -> BlazeLayout.render '_layout', content: '_loading'
 
+FlowRouter.route '/post/:_id',
+  name: 'post.id'
+  title: (params, query, post) -> if post then post?.title else '404: Page not found'
+  action: (params, query, post) -> BlazeLayout.render '_layout', content: 'post', post: post, rand: Random.id()
+  waitOn: -> [sm.subscribe('posts')]
+  data: (params) -> Collections.posts.findOne(params._id)
+  onNoData:     -> BlazeLayout.render '_layout', content: '_404', rand: Random.id()
+  whileWaiting: -> BlazeLayout.render '_layout', content: '_loading'
+
 new FlowRouterTitle FlowRouter

@@ -16,6 +16,7 @@ template(name='_layout')
           li: a(href="{{pathFor 'groupPage1'}}") Group page, with group-level title
           li: a(href="{{pathFor 'groupPage2'}}") Group page, with group-level title prefix
           li: a(href="{{pathFor 'post'}}") Demo post, with data from Mongo
+          li: a(href="{{pathFor 'post.id' _id=rand}}") "NoData" route
           li: a(href="/nonexistent/route") 404: Non-existent route
 
   hr
@@ -174,7 +175,7 @@ template(name="_loading")
 
 template(name='_404')
   // response:status-code=404
-  .well(style="text-align:center")
+  .alert.alert-danger(style="text-align:center")
     h1 404
     h3 Whoops, page not found
 
