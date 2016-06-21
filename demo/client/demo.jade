@@ -7,7 +7,7 @@ template(name='_layout')
       .col-md-12
         h3 ostrio:flow-router-title demo
         .alert.alert-info
-          | {{>Template.dynamic template=content}}
+          +yield
         h5 Pages:
         ul
           li: a(href="{{pathFor 'index'}}") Index
@@ -41,8 +41,7 @@ template(name='index')
     FlowRouter.route('/', {
       name: 'index',
       action: function() {
-        return BlazeLayout.render('_layout', {
-          content: 'index',
+        return this.render('_layout', 'index', {
           rand: Random.id()
         });
       }
@@ -59,8 +58,7 @@ template(name='secondPage')
       name: 'secondPage',
       title: 'Second Page title',
       action: function() {
-        return BlazeLayout.render('_layout', {
-          content: 'secondPage',
+        return this.render('_layout', 'secondPage', {
           rand: Random.id()
         });
       }
@@ -79,8 +77,7 @@ template(name='thirdPage')
         return "Third Page Title > " + this.params.something;
       },
       action: function(params, query) {
-        return BlazeLayout.render('_layout', {
-          content: 'thirdPage',
+        return this.render('_layout', 'thirdPage', {
           rand: params.something
         });
       }
@@ -102,8 +99,7 @@ template(name='groupPage1')
     group.route('/groupPage1', {
       name: 'groupPage1',
       action: function(params, query) {
-        return BlazeLayout.render('_layout', {
-          content: 'groupPage1',
+        return this.render('_layout', 'groupPage1', {
           rand: Random.id()
         });
       }
@@ -126,8 +122,7 @@ template(name='groupPage2')
       name: 'groupPage2',
       title: 'Group page 2',
       action: function(params, query) {
-        return BlazeLayout.render('_layout', {
-          content: 'groupPage2',
+        return this.render('_layout', 'groupPage2', {
           rand: Random.id()
         });
       }
@@ -150,8 +145,7 @@ template(name='post')
         return post.title;
       },
       action: function(params, query, post) {
-        return BlazeLayout.render('_layout', {
-          content: 'post',
+        return this.render('_layout', 'post', {
           post: post,
           rand: Random.id()
         });
@@ -163,9 +157,7 @@ template(name='post')
         return Collections.posts.findOne();
       },
       whileWaiting: function() {
-        return BlazeLayout.render('_layout', {
-          content: '_loading'
-        });
+        return this.render('_layout', '_loading');
       }
     });
     ```
@@ -184,8 +176,7 @@ template(name='_404')
     ```javascript
     FlowRouter.notFound = {
       action: function() {
-        return BlazeLayout.render('_layout', {
-          content: '_404',
+        return this.render('_layout', '_404', {
           rand: Random.id()
         });
       },
