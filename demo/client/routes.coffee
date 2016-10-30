@@ -1,4 +1,6 @@
 sm = new SubsManager()
+
+`import { FlowRouter } from 'meteor/ostrio:flow-router-extra';`
 FlowRouter.globals.push title: 'Default title'
 
 FlowRouter.notFound = 
@@ -47,4 +49,5 @@ FlowRouter.route '/post/:_id',
   onNoData:     -> @render '_layout', '_404', rand: Random.id()
   whileWaiting: -> @render '_layout', '_loading'
 
+`import { FlowRouterTitle } from 'meteor/ostrio:flow-router-title';`
 new FlowRouterTitle FlowRouter

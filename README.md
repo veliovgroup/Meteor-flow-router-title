@@ -27,6 +27,12 @@ Demo Application:
  - [Source](https://github.com/VeliovGroup/Meteor-flow-router-title/tree/master/demo)
  - ~~Live: http://flow-router-title.meteor.com~~ (*We are looking for free hosting for this demo*)
 
+ES6 Import:
+========
+```jsx
+import { FlowRouterTitle } from 'meteor/ostrio:flow-router-title';
+```
+
 Usage:
 ========
 You need to initialize `FlowRouterTitle` class by passing `FlowRouter` object. Right after creating all your routes:
