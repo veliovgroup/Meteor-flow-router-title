@@ -59,4 +59,4 @@ class FlowRouterTitle
         _self.titleHandler _context
       _orig.apply @, arguments
 
-`export { FlowRouter }`
+`export { FlowRouterTitle }`
