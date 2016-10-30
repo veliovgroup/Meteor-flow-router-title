@@ -49,5 +49,22 @@ FlowRouter.route '/post/:_id',
   onNoData:     -> @render '_layout', '_404', rand: Random.id()
   whileWaiting: -> @render '_layout', '_loading'
 
+FlowRouter.route '/imgs',
+  name: 'imgs'
+  title: (params, query, data) -> if data then data?.title else '404: Page not found'
+  action: (params, query, data) -> @render '_layout', 'imgs', data: data, rand: Random.id()
+  waitOnResources: (params, query, data) -> {images: data?.images or []}
+  data: (params) -> 
+    return {
+      title: 'DATA TITLE'
+      images: [
+        'https://static.pexels.com/photos/74536/kitchen-food-nuts-theme-patterns-74536.jpeg'
+        'https://static.pexels.com/photos/87439/hornet-wasp-insect-sting-87439.jpeg'
+        'https://static.pexels.com/photos/195537/pexels-photo-195537.jpeg'
+      ]
+    }
+  onNoData:     -> @render '_layout', '_404', rand: Random.id()
+  whileWaiting: -> @render '_layout', '_loading'
+
 `import { FlowRouterTitle } from 'meteor/ostrio:flow-router-title';`
 new FlowRouterTitle FlowRouter

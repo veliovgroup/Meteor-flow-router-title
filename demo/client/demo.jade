@@ -17,6 +17,7 @@ template(name='_layout')
           li: a(href="{{pathFor 'groupPage2'}}") Group page, with group-level title prefix
           li: a(href="{{pathFor 'post'}}") Demo post, with data from Mongo
           li: a(href="{{pathFor 'post.id' _id=rand}}") "NoData" route
+          li: a(href="{{pathFor 'imgs'}}") "Test image pre-load" route
           li: a(href="/nonexistent/route") 404: Non-existent route
 
   hr
@@ -64,6 +65,10 @@ template(name='secondPage')
       }
     });
     ```
+
+template(name='imgs')
+  each data.images
+    img(style="display:block;max-width:250px; margin: 15px auto" src="{{this}}")
 
 template(name='thirdPage')
   +markdown
