@@ -32,6 +32,17 @@ group.route '/groupPage2',
   title: 'Group page 2'
   action: (params, query) -> @render '_layout', 'groupPage2', rand: Random.id()
 
+nestedGroup = group.group prefix: '/level2', title: "LEVEL2 GROUP TITLE", titlePrefix: 'Group Level 2 > '
+
+nestedGroup.route '/withoutTitle',
+  name: 'lvl2'
+  action: (params, query) -> @render '_layout', 'lvl2', rand: Random.id()
+
+nestedGroup.route '/witTitle',
+  name: 'lvl2Title'
+  title: 'Level 2 page'
+  action: (params, query) -> @render '_layout', 'lvl2Title', rand: Random.id()
+
 FlowRouter.route '/post',
   name: 'post'
   title: (params, query, post) -> post?.title

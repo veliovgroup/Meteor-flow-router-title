@@ -15,6 +15,8 @@ template(name='_layout')
           li: a(href="{{pathFor 'thirdPage' something=rand}}") Third Page with parameter "<b>{{rand}}</b>"
           li: a(href="{{pathFor 'groupPage1'}}") Group page, with group-level title
           li: a(href="{{pathFor 'groupPage2'}}") Group page, with group-level title prefix
+          li: a(href="{{pathFor 'lvl2'}}") Nested Group page, with group-level title
+          li: a(href="{{pathFor 'lvl2Title'}}") Nested Group page, with group-level title prefix
           li: a(href="{{pathFor 'post'}}") Demo post, with data from Mongo
           li: a(href="{{pathFor 'post.id' _id=rand}}") "NoData" route
           li: a(href="{{pathFor 'imgs'}}") "Test image pre-load" route
@@ -134,6 +136,51 @@ template(name='groupPage2')
     });
     ```
 
+template(name='lvl2')
+  +markdown
+    __Group Page (no prefix)__, title should be: "*Group > LEVEL2 GROUP TITLE*"
+
+    ##### Code:
+    ```javascript
+    var nestedGroup = group.group({
+      prefix: '/level2',
+      title: "LEVEL2 GROUP TITLE",
+      titlePrefix: 'Group Level 2 > '
+    });
+
+    nestedGroup.route('/withoutTitle', {
+      name: 'lvl2',
+      action: function(params, query) {
+        return this.render('_layout', 'lvl2', {
+          rand: Random.id()
+        });
+      }
+    });
+    ```
+
+template(name='lvl2Title')
+  +markdown
+    __Group Page (with prefix)__, title should be: "*Group > Group Level 2 > Level 2 page*"
+
+    ##### Code:
+    ```javascript
+    var nestedGroup = group.group({
+      prefix: '/level2',
+      title: "LEVEL2 GROUP TITLE",
+      titlePrefix: 'Group Level 2 > '
+    });
+
+    nestedGroup.route('/witTitle', {
+      name: 'lvl2Title',
+      title: 'Level 2 page',
+      action: function(params, query) {
+        return this.render('_layout', 'lvl2Title', {
+          rand: Random.id()
+        });
+      }
+    });
+    ```
+
 template(name='post')
   +markdown
     __Demo post, data fetched from Mongo__, title should be: "*{{post.title}}*"
@@ -168,7 +215,7 @@ template(name='post')
     ```
 
 template(name="_loading")
-  center: h4 Loading data from Mongo...
+  center: h4 Loading data ...
 
 template(name='_404')
   // response:status-code=404
