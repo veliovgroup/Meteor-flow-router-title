@@ -16,7 +16,7 @@ export class FlowRouterTitle
       defaultTitle      = null
       _context          = _.extend context, {query: context.queryParams}
       _arguments        = [context.params, context.queryParams, data]
-      _groupTitlePrefix = @_getParentPrefix @router._current.route.group, _context, _arguments
+      _groupTitlePrefix = @_getParentPrefix @router._current?.route?.group, _context, _arguments
 
       if @router.globals.length
         for option in @router.globals
