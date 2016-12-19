@@ -1,8 +1,8 @@
-import { FlowRouter } from 'meteor/ostrio:flow-router-extra';
-
 if (Meteor.isServer) {
   return false;
 }
+
+import { FlowRouter } from 'meteor/ostrio:flow-router-extra';
 
 FlowRouter.globals.push({
   title: 'Default title'

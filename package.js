@@ -14,6 +14,6 @@ Package.onUse(function (api) {
 });
 
 Package.onTest(function(api) {
-  api.use(['tinytest', 'ecmascript', 'ostrio:flow-router-extra', 'ostrio:flow-router-title', 'random']);
-  api.addFiles('tests.js');
+  api.use(['tinytest', 'ecmascript', 'ostrio:flow-router-extra', 'ostrio:flow-router-title', 'random'], 'client');
+  api.addFiles('tests.js', 'client');
 });
