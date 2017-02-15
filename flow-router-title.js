@@ -1,7 +1,6 @@
-/* jshint esversion:6 */
 export class FlowRouterTitle {
   constructor(router) {
-    let _self = this;
+    const _self = this;
     this.router = router;
     let hardCodedTitle = document.title || null;
     const title = new ReactiveVar(hardCodedTitle);
@@ -17,37 +16,31 @@ export class FlowRouterTitle {
 
     this.titleHandler = (context, redirect, stop, data) => {
       let _title;
-      let option;
-      let ref;
-      let ref1;
-      let ref3;
-      let ref4;
-      let ref5;
-      let ref6;
-      let ref7;
       let defaultTitle = null;
-      const _context = _.extend(context, {
-        query: context.queryParams
-      });
+      const _context = _.extend(context, { query: context.queryParams });
       const _arguments = [context.params, context.queryParams, data];
-      let _groupTitlePrefix = this._getParentPrefix((ref = this.router._current) != null ? (ref1 = ref.route) != null ? ref1.group : void 0 : void 0, _context, _arguments);
+      let _groupTitlePrefix = this._getParentPrefix(((this.router._current && this.router._current.route && this.router._current.route.group) ? this.router._current.route.group : void 0), _context, _arguments);
+
       if (this.router.globals.length) {
-        for (let j = 0, len = this.router.globals.length; j < len; j++) {
+        for (let j = 0; j < this.router.globals.length; j++) {
           if (_.isObject(this.router.globals[j]) && _.has(this.router.globals[j], 'title')) {
             defaultTitle = this.router.globals[j].title;
+            break;
           }
         }
       }
-      if ((ref3 = context.route) != null ? (ref4 = ref3.group) != null ? ref4.options : void 0 : void 0) {
-        let _routeTitle = (ref5 = context.route.options) != null ? ref5.title : void 0;
+
+      if (context.route && context.route.group && context.route.group.options) {
+        let _routeTitle = (context.route.options && context.route.options.title) ? context.route.options.title : void 0;
         if (_.isFunction(_routeTitle)) {
           _routeTitle = _routeTitle.apply(_context, _arguments);
         }
 
-        let _groupTitle = (ref6 = context.route.group.options) != null ? ref6.title : void 0;
+        let _groupTitle = (context.route.group.options && context.route.group.options.title) ? context.route.group.options.title : void 0;
         if (_.isFunction(_groupTitle)) {
           _groupTitle = _groupTitle.apply(_context, _arguments);
         }
+
         if (!_routeTitle) {
           _title = _groupTitlePrefix + (_groupTitle || defaultTitle || hardCodedTitle);
         } else if (_routeTitle && _groupTitlePrefix) {
@@ -56,14 +49,15 @@ export class FlowRouterTitle {
           _title = _groupTitlePrefix + (_routeTitle || defaultTitle || hardCodedTitle);
         }
       } else {
-        _title = ((ref7 = context.route.options) != null ? ref7.title : void 0) || defaultTitle || hardCodedTitle;
+        _title = ((context.route.options && context.route.options.title) ? context.route.options.title : void 0) || defaultTitle || hardCodedTitle;
         if (_.isFunction(_title)) {
           _title = _title.apply(_context, _arguments);
         }
       }
+
       if (_.isString(_title)) {
         title.set(_title);
-        if (context != null ? context.context : void 0) {
+        if (context && context.context != null) {
           context.context.title = _title;
         }
       }
@@ -71,14 +65,14 @@ export class FlowRouterTitle {
 
     this.router.triggers.enter([this.titleHandler]);
     const _orig = this.router._notfoundRoute;
-    this.router._notfoundRoute = function(context) {
-      let ref;
+    this.router._notfoundRoute = function() {
       const _context = {
         route: {
           options: {}
         }
       };
-      _context.route.options.title = (ref = _self.router.notFound) != null ? ref.title : void 0;
+      _context.route.options.title = (_self.router.notFound && _self.router.notFound.title) ? _self.router.notFound.title : void 0;
+
       if (!_.isEmpty(_self.router._current)) {
         _self.titleHandler(_.extend(_self.router._current, _context));
       } else {
@@ -88,17 +82,12 @@ export class FlowRouterTitle {
     };
   }
 
-  _getParentPrefix(group, _context, _arguments, i) {
-    let ref;
-    let ref1;
-    if (i == null) {
-      i = 0;
-    }
+  _getParentPrefix(group, _context, _arguments, i = 0) {
     let prefix = '';
     i++;
     if (group) {
-      if ((ref = group.options) != null ? ref.titlePrefix : void 0) {
-        if ((((ref1 = _context.route.options) != null ? ref1.title : void 0) && i === 1) || i !== 1) {
+      if (group.options && group.options.titlePrefix) {
+        if ((_context.route.options && _context.route.options.title && i === 1) || i !== 1) {
           let _gt = group.options.titlePrefix;
           if (_.isFunction(_gt)) {
             _gt = _gt.apply(_context, _arguments);
