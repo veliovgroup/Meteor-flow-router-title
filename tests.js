@@ -9,61 +9,61 @@ FlowRouter.globals.push({
 });
 
 FlowRouter.notFound = {
-  action: function() {},
+  action() {},
   title: '404: Page not found'
 };
 
 FlowRouter.route('/', {
   name: 'index',
-  action: function() {}
+  action() {}
 });
 
 FlowRouter.route('/secondPage', {
   name: 'secondPage',
   title: 'Second Page title',
-  action: function() {}
+  action() {}
 });
 
 FlowRouter.route('/thirdPage/:something', {
   name: 'thirdPage',
-  title: function() {
-    return "Third Page Title > " + this.params.something;
+  title() {
+    return 'Third Page Title > ' + this.params.something;
   },
-  action: function(params, query) {}
+  action() {}
 });
 
 group = FlowRouter.group({
   prefix: '/group',
-  title: "GROUP TITLE",
+  title: 'GROUP TITLE',
   titlePrefix: 'Group > '
 });
 
 group.route('/groupPage1', {
   name: 'groupPage1',
-  action: function(params, query) {}
+  action() {}
 });
 
 group.route('/groupPage2', {
   name: 'groupPage2',
   title: 'Group page 2',
-  action: function(params, query) {}
+  action() {}
 });
 
 nestedGroup = group.group({
   prefix: '/level2',
-  title: "LEVEL2 GROUP TITLE",
+  title: 'LEVEL2 GROUP TITLE',
   titlePrefix: 'Group Level 2 > '
 });
 
 nestedGroup.route('/withoutTitle', {
   name: 'lvl2',
-  action: function(params, query) {}
+  action() {}
 });
 
 nestedGroup.route('/witTitle', {
   name: 'lvl2Title',
   title: 'Level 2 page',
-  action: function(params, query) {}
+  action() {}
 });
 
 import { FlowRouterTitle } from 'meteor/ostrio:flow-router-title';
@@ -71,7 +71,7 @@ new FlowRouterTitle(FlowRouter);
 FlowRouter.go('/');
 
 Tinytest.addAsync('Global Defaults', function (test, next) {
-  setTimeout(function () {
+  setTimeout(() => {
     test.equal(document.title, 'Default title');
     next();
   }, 100);
@@ -79,7 +79,7 @@ Tinytest.addAsync('Global Defaults', function (test, next) {
 
 Tinytest.addAsync('Title - String', function (test, next) {
   FlowRouter.go('secondPage');
-  setTimeout(function () {
+  setTimeout(() => {
     test.equal(document.title, 'Second Page title');
     next();
   }, 100);
@@ -88,7 +88,7 @@ Tinytest.addAsync('Title - String', function (test, next) {
 Tinytest.addAsync('Title - Function with dynamic data', function (test, next) {
   var _str = Random.id();
   FlowRouter.go('thirdPage', {something: _str});
-  setTimeout(function () {
+  setTimeout(() => {
     test.equal(document.title, 'Third Page Title > ' + _str);
     next();
   }, 100);
@@ -96,7 +96,7 @@ Tinytest.addAsync('Title - Function with dynamic data', function (test, next) {
 
 Tinytest.addAsync('Group - level 1 - no route title', function (test, next) {
   FlowRouter.go('groupPage1');
-  setTimeout(function () {
+  setTimeout(() => {
     test.equal(document.title, 'GROUP TITLE');
     next();
   }, 100);
@@ -104,7 +104,7 @@ Tinytest.addAsync('Group - level 1 - no route title', function (test, next) {
 
 Tinytest.addAsync('Group - level 1 - with route title', function (test, next) {
   FlowRouter.go('groupPage2');
-  setTimeout(function () {
+  setTimeout(() => {
     test.equal(document.title, 'Group > Group page 2');
     next();
   }, 100);
@@ -112,7 +112,7 @@ Tinytest.addAsync('Group - level 1 - with route title', function (test, next) {
 
 Tinytest.addAsync('Group - level 2 - no route title', function (test, next) {
   FlowRouter.go('lvl2');
-  setTimeout(function () {
+  setTimeout(() => {
     test.equal(document.title, 'Group > LEVEL2 GROUP TITLE');
     next();
   }, 100);
@@ -120,7 +120,7 @@ Tinytest.addAsync('Group - level 2 - no route title', function (test, next) {
 
 Tinytest.addAsync('Group - level 2 - with route title', function (test, next) {
   FlowRouter.go('lvl2Title');
-  setTimeout(function () {
+  setTimeout(() => {
     test.equal(document.title, 'Group > Group Level 2 > Level 2 page');
     next();
   }, 100);
@@ -128,7 +128,7 @@ Tinytest.addAsync('Group - level 2 - with route title', function (test, next) {
 
 Tinytest.addAsync('404 via FlowRouter.notFound', function (test, next) {
   FlowRouter.go('/not/exists/for/sure');
-  setTimeout(function () {
+  setTimeout(() => {
     test.equal(document.title, '404: Page not found');
     next();
   }, 100);
