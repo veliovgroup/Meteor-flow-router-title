@@ -49,7 +49,7 @@ export class FlowRouterTitle {
           _title = _groupTitlePrefix + (_routeTitle || defaultTitle || hardCodedTitle);
         }
       } else {
-        _title = ((context.route.options && context.route.options.title) ? context.route.options.title : void 0) || defaultTitle || hardCodedTitle;
+        _title = (context.route.options && context.route.options.title) ? context.route.options.title : (defaultTitle || hardCodedTitle);
         if (_.isFunction(_title)) {
           _title = _title.apply(_context, _arguments);
         }
@@ -57,7 +57,7 @@ export class FlowRouterTitle {
 
       if (_.isString(_title)) {
         title.set(_title);
-        if (context && context.context != null) {
+        if (context && context.context && _.isObject(context.context)) {
           context.context.title = _title;
         }
       }
