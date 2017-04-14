@@ -1,3 +1,6 @@
+import { _ }           from 'meteor/underscore';
+import { ReactiveVar } from 'meteor/reactive-var';
+
 export class FlowRouterTitle {
   constructor(router) {
     const _self = this;
