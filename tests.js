@@ -1,8 +1,10 @@
+import { Meteor }     from 'meteor/meteor';
+import { Random }     from 'meteor/random';
+import { FlowRouter } from 'meteor/ostrio:flow-router-extra';
+
 if (Meteor.isServer) {
   return;
 }
-
-import { FlowRouter } from 'meteor/ostrio:flow-router-extra';
 
 FlowRouter.globals.push({
   title: 'Default title'
