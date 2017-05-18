@@ -1,14 +1,16 @@
-Reactive page title for Meteor and flow-router-extra
+Reactive page title
 ========
-Change `document.title` on the fly within [flow-router-extra](https://github.com/VeliovGroup/flow-router)
+Change `document.title` on the fly within [flow-router-extra](https://github.com/VeliovGroup/flow-router).
 
-__Important Notice__: This package oriented to work with [`flow-router-extra`](https://github.com/VeliovGroup/flow-router). It is extended fork of `kadira:flow-router`.
+Features:
+ - 100% tests coverage;
+ - Per route, per group, and default (*all routes*) `title` tag.
 
-This package supports `title` option defined in list below, ordered by prioritization:
- - `FlowRouter.route()` [*overrides all*]
+Various ways to set `title`, ordered by prioritization:
+ - `FlowRouter.route()` [*overrides all below*]
  - `FlowRouter.group()`
  - `FlowRouter.globals`
- - `<title>Text</title>`[*might be overridden by any above*]
+ - Head template `<title>Text</title>` tag [*might be overridden by any above*]
 
 This package tested and works like a charm with most common Meteor's packages:
  - [subs-manager](https://github.com/kadirahq/subs-manager)
@@ -21,20 +23,20 @@ Install:
 meteor add ostrio:flow-router-title
 ```
 
-Demo Application:
+Demos / Tests:
 ========
  - [Source](https://github.com/VeliovGroup/Meteor-flow-router-title/tree/master/demo)
+ - [Tests](https://github.com/VeliovGroup/Meteor-flow-router-title/tree/master/tests.js)
 
 ES6 Import:
 ========
-__Since v3.0.0__ `FlowRouterTitle` __variable is not exported into global-scope, use__ `import`
 ```jsx
 import { FlowRouterTitle } from 'meteor/ostrio:flow-router-title';
 ```
 
 Usage:
 ========
-You need to initialize `FlowRouterTitle` class by passing `FlowRouter` object. Right after creating all your routes:
+Initialize `FlowRouterTitle` class by passing `FlowRouter` object. Right after creating all routes:
 ```jsx
 FlowRouter.route('/', {
   action() { /* ... */ },
@@ -119,7 +121,7 @@ FlowRouter.route('/page/:something', {
 });
 ```
 
-All examples above is meant to be a *Function* or *String*:
+In all examples above `title` can be a *Function* or *String*:
 ```jsx
 FlowRouter.globals.push({
   title() {/* ... */}
