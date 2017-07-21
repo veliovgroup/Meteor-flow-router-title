@@ -3,7 +3,7 @@ import { ReactiveVar } from 'meteor/reactive-var';
 
 export class FlowRouterTitle {
   constructor(router) {
-    const _self = this;
+    const self = this;
     this.router = router;
     let hardCodedTitle = document.title || null;
     const title = new ReactiveVar(hardCodedTitle);
@@ -74,12 +74,12 @@ export class FlowRouterTitle {
           options: {}
         }
       };
-      _context.route.options.title = (_self.router.notFound && _self.router.notFound.title) ? _self.router.notFound.title : void 0;
+      _context.route.options.title = (self.router.notFound && self.router.notFound.title) ? self.router.notFound.title : void 0;
 
-      if (!_.isEmpty(_self.router._current)) {
-        _self.titleHandler(_.extend(_self.router._current, _context));
+      if (!_.isEmpty(self.router._current)) {
+        self.titleHandler(_.extend(self.router._current, _context));
       } else {
-        _self.titleHandler(_context);
+        self.titleHandler(_context);
       }
       _orig.apply(this, arguments);
     };
