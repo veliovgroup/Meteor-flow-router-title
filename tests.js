@@ -10,10 +10,10 @@ FlowRouter.globals.push({
   title: 'Default title'
 });
 
-FlowRouter.notFound = {
+FlowRouter.route('*', {
   action() {},
   title: '404: Page not found'
-};
+});
 
 FlowRouter.route('/', {
   name: 'index',

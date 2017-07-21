@@ -1,6 +1,6 @@
 Package.describe({
   name: 'ostrio:flow-router-title',
-  version: '3.0.3',
+  version: '3.0.4',
   summary: 'Change document.title (page title) on the fly within flow-router',
   git: 'https://github.com/VeliovGroup/Meteor-flow-router-title',
   documentation: 'README.md'
@@ -8,7 +8,7 @@ Package.describe({
 
 Package.onUse(function (api) {
   api.versionsFrom('1.4');
-  api.use(['underscore', 'ecmascript', 'reactive-var', 'ostrio:flow-router-extra@3.2.0'], 'client');
+  api.use(['underscore', 'ecmascript', 'reactive-var', 'ostrio:flow-router-extra@3.2.1'], 'client');
   api.mainModule('flow-router-title.js', 'client');
 });
 
