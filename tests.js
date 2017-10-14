@@ -1,6 +1,8 @@
-import { Meteor }     from 'meteor/meteor';
-import { Random }     from 'meteor/random';
-import { FlowRouter } from 'meteor/ostrio:flow-router-extra';
+import { Meteor }      from 'meteor/meteor';
+import { Random }      from 'meteor/random';
+import { Session }     from 'meteor/session';
+import { FlowRouter }  from 'meteor/ostrio:flow-router-extra';
+import { ReactiveVar } from 'meteor/reactive-var';
 
 if (Meteor.isServer) {
   return;
@@ -24,6 +26,70 @@ FlowRouter.route('/secondPage', {
   name: 'secondPage',
   title: 'Second Page title',
   action() {}
+});
+
+const sessionDefault = 'Default Reactive Session Title';
+const sessionNew = 'NEW Reactive Session Title';
+Session.set('reactiveSessionTitle', sessionDefault);
+
+FlowRouter.route('/reactiveSession', {
+  name: 'reactiveSession',
+  title() {
+    return Session.get('reactiveSessionTitle');
+  },
+  action() {
+    Meteor.setTimeout(() => {
+      Session.set('reactiveSessionTitle', sessionNew);
+    }, 1024);
+  }
+});
+
+const sessionArgsDefault = 'Default Reactive Session with args Title';
+const sessionArgsNew = 'NEW Reactive Session with args Title';
+Session.set('reactiveArgsSessionTitle', sessionArgsDefault);
+
+FlowRouter.route('/reactiveArgsSession/:one/:two', {
+  name: 'reactiveArgsSession',
+  title(params) {
+    return Session.get('reactiveArgsSessionTitle') + params.one + params.two;
+  },
+  action() {
+    Meteor.setTimeout(() => {
+      Session.set('reactiveArgsSessionTitle', sessionArgsNew);
+    }, 1024);
+  }
+});
+
+const varDefault = 'Default Reactive Var Title';
+const varNew = 'NEW Reactive Var Title';
+const reactiveVarTitle = new ReactiveVar(varDefault);
+
+FlowRouter.route('/reactiveVar', {
+  name: 'reactiveVar',
+  title() {
+    return reactiveVarTitle.get();
+  },
+  action() {
+    Meteor.setTimeout(() => {
+      reactiveVarTitle.set(varNew);
+    }, 1024);
+  }
+});
+
+const varArgsDefault = 'Default Reactive Var with args Title';
+const varArgsNew = 'NEW Reactive Var with args Title';
+const reactiveArgsVarTitle = new ReactiveVar(varArgsDefault);
+
+FlowRouter.route('/reactiveArgsVar/:one/:two', {
+  name: 'reactiveArgsVar',
+  title(params) {
+    return reactiveArgsVarTitle.get() + params.one + params.two;
+  },
+  action() {
+    Meteor.setTimeout(() => {
+      reactiveArgsVarTitle.set(varArgsNew);
+    }, 1024);
+  }
 });
 
 FlowRouter.route('/thirdPage/:something', {
@@ -87,8 +153,56 @@ Tinytest.addAsync('Title - String', function (test, next) {
   }, 100);
 });
 
+Tinytest.addAsync('Title - Reactive - Session', function (test, next) {
+  FlowRouter.go('reactiveSession');
+  setTimeout(() => {
+    test.equal(document.title, sessionDefault);
+    setTimeout(() => {
+      test.equal(document.title, sessionNew);
+      next();
+    }, 1536);
+  }, 100);
+});
+
+Tinytest.addAsync('Title - Reactive - Session with args', function (test, next) {
+  const one = Random.id();
+  const two = Random.id();
+  FlowRouter.go('reactiveArgsSession', { one, two });
+  setTimeout(() => {
+    test.equal(document.title, sessionArgsDefault + one + two);
+    setTimeout(() => {
+      test.equal(document.title, sessionArgsNew + one + two);
+      next();
+    }, 1536);
+  }, 100);
+});
+
+Tinytest.addAsync('Title - Reactive - Var', function (test, next) {
+  FlowRouter.go('reactiveVar');
+  setTimeout(() => {
+    test.equal(document.title, varDefault);
+    setTimeout(() => {
+      test.equal(document.title, varNew);
+      next();
+    }, 1536);
+  }, 100);
+});
+
+Tinytest.addAsync('Title - Reactive - Var with args', function (test, next) {
+  const one = Random.id();
+  const two = Random.id();
+  FlowRouter.go('reactiveArgsVar', { one, two });
+  setTimeout(() => {
+    test.equal(document.title, varArgsDefault + one + two);
+    setTimeout(() => {
+      test.equal(document.title, varArgsNew + one + two);
+      next();
+    }, 1536);
+  }, 100);
+});
+
 Tinytest.addAsync('Title - Function with dynamic data', function (test, next) {
-  var _str = Random.id();
+  const _str = Random.id();
   FlowRouter.go('thirdPage', {something: _str});
   setTimeout(() => {
     test.equal(document.title, 'Third Page Title > ' + _str);
