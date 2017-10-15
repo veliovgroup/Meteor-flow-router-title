@@ -1,4 +1,5 @@
 import { _ }           from 'meteor/underscore';
+import { Tracker }     from 'meteor/tracker';
 import { ReactiveVar } from 'meteor/reactive-var';
 
 export class FlowRouterTitle {
@@ -14,6 +15,34 @@ export class FlowRouterTitle {
         }
         document.title = newValue;
         this.curValue = newValue;
+      }
+    };
+
+    const computations = [];
+    this._reactivate = (titleFunc, _context, context, _arguments, cb) => {
+      const comp = Tracker.autorun(titleFunc.bind(_context, ..._arguments));
+      const compute = () => {
+        let result = titleFunc.apply(_context, _arguments);
+        if (cb) {
+          result = cb(result);
+        }
+
+        if (_.isString(result)) {
+          title.set(result);
+          if (context && context.context && _.isObject(context.context)) {
+            context.context.title = result;
+          }
+        }
+      };
+      comp.onInvalidate(compute);
+      compute();
+      computations.push(comp);
+    };
+
+    this.titleExitHandler = () => {
+      for (var i = computations.length - 1; i >= 0; i--) {
+        computations[i].stop();
+        computations.splice(i, 1);
       }
     };
 
@@ -35,26 +64,44 @@ export class FlowRouterTitle {
 
       if (context.route && context.route.group && context.route.group.options) {
         let _routeTitle = (context.route.options && context.route.options.title) ? context.route.options.title : void 0;
-        if (_.isFunction(_routeTitle)) {
-          _routeTitle = _routeTitle.apply(_context, _arguments);
-        }
-
         let _groupTitle = (context.route.group.options && context.route.group.options.title) ? context.route.group.options.title : void 0;
-        if (_.isFunction(_groupTitle)) {
-          _groupTitle = _groupTitle.apply(_context, _arguments);
+
+        const applyRouteTitle = (__routeTitle) => {
+          if (_.isFunction(__routeTitle)) {
+            return __routeTitle.apply(_context, _arguments);
+          } else if (_.isString(__routeTitle)) {
+            return __routeTitle;
+          }
+          return '';
+        };
+
+        const applyGroupTitle = (__groupTitle) => {
+          let __title = '';
+          const __routeTitle = applyRouteTitle(_routeTitle);
+          if (!__routeTitle) {
+            __title = _groupTitlePrefix + applyRouteTitle(__groupTitle || defaultTitle || hardCodedTitle);
+          } else if (__routeTitle && _groupTitlePrefix) {
+            __title = _groupTitlePrefix + __routeTitle;
+          } else {
+            __title = _groupTitlePrefix + applyRouteTitle(__routeTitle || defaultTitle || hardCodedTitle);
+          }
+          return __title;
+        };
+
+        if (_.isFunction(_routeTitle)) {
+          this._reactivate(_routeTitle, _context, context, _arguments, applyGroupTitle);
+          return;
         }
 
-        if (!_routeTitle) {
-          _title = _groupTitlePrefix + (_groupTitle || defaultTitle || hardCodedTitle);
-        } else if (_routeTitle && _groupTitlePrefix) {
-          _title = _groupTitlePrefix + _routeTitle;
-        } else {
-          _title = _groupTitlePrefix + (_routeTitle || defaultTitle || hardCodedTitle);
+        if (_.isFunction(_groupTitle)) {
+          this._reactivate(_groupTitle, _context, context, _arguments, applyGroupTitle);
+          return;
         }
+        _title = applyGroupTitle(_groupTitle);
       } else {
         _title = (context.route.options && context.route.options.title) ? context.route.options.title : (defaultTitle || hardCodedTitle);
         if (_.isFunction(_title)) {
-          _title = _title.apply(_context, _arguments);
+          this._reactivate(_title, _context, context, _arguments);
         }
       }
 
@@ -67,6 +114,7 @@ export class FlowRouterTitle {
     };
 
     this.router.triggers.enter([this.titleHandler]);
+    this.router.triggers.exit([this.titleExitHandler]);
     const _orig = this.router._notfoundRoute;
     this.router._notfoundRoute = function() {
       const _context = {
