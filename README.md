@@ -26,7 +26,7 @@ meteor add ostrio:flow-router-title
 Demos / Tests:
 ========
  - [Source](https://github.com/VeliovGroup/Meteor-flow-router-title/tree/master/demo)
- - [Tests](https://github.com/VeliovGroup/Meteor-flow-router-title/tree/master/tests.js)
+ - [Tests](https://github.com/VeliovGroup/Meteor-flow-router-title/tree/master/tests)
 
 ES6 Import:
 ========
