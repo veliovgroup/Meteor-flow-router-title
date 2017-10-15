@@ -7,8 +7,8 @@ export class FlowRouterTitle {
     const self = this;
     this.router = router;
     let hardCodedTitle = document.title || null;
-    const title = new ReactiveVar(hardCodedTitle);
-    title.set = function(newValue) {
+    this.title = new ReactiveVar(hardCodedTitle);
+    this.title.set = function(newValue) {
       if (this.curValue !== newValue) {
         if (!hardCodedTitle) {
           hardCodedTitle = document.title;
@@ -28,7 +28,7 @@ export class FlowRouterTitle {
         }
 
         if (_.isString(result)) {
-          title.set(result);
+          self.title.set(result);
           if (context && context.context && _.isObject(context.context)) {
             context.context.title = result;
           }
@@ -106,7 +106,7 @@ export class FlowRouterTitle {
       }
 
       if (_.isString(_title)) {
-        title.set(_title);
+        self.title.set(_title);
         if (context && context.context && _.isObject(context.context)) {
           context.context.title = _title;
         }
@@ -131,6 +131,14 @@ export class FlowRouterTitle {
       }
       _orig.apply(this, arguments);
     };
+  }
+
+  set(str) {
+    if (_.isString(str)) {
+      this.title.set(str);
+      return true;
+    }
+    return false;
   }
 
   _getParentPrefix(group, _context, _arguments, i = 0) {
