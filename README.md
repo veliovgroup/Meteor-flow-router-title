@@ -30,14 +30,14 @@ Demos / Tests:
 
 ES6 Import:
 ========
-```jsx
+```js
 import { FlowRouterTitle } from 'meteor/ostrio:flow-router-title';
 ```
 
 Usage:
 ========
 Initialize `FlowRouterTitle` class by passing `FlowRouter` object. Right after creating all routes:
-```jsx
+```js
 FlowRouter.route('/', {
   action() { /* ... */ },
   title: "Title"
@@ -48,7 +48,7 @@ new FlowRouterTitle(FlowRouter);
 ```
 
 Set `title` property in route's or group's configuration:
-```jsx
+```js
 // Set default document.title value in 
 // case router has no title property
 FlowRouter.globals.push({
@@ -61,8 +61,18 @@ FlowRouter.route('/me/account', {
 });
 ```
 
+Set `document.title` during runtime (*without route(s)*):
+```js
+FlowRouter.route('/', {/* ... */});
+
+const titleHandler = new FlowRouterTitle(FlowRouter);
+// `.set()` method accepts only String
+titleHandler.set('My Awesome Title String'); // <- Returns `true`
+titleHandler.set(() => { return 'Wrapped title'; }); // <- Returns `false`, as function can't be set into the `document.title`
+```
+
 Use function context (with [`data`](https://github.com/VeliovGroup/flow-router#data-hook) hook):
-```jsx
+```js
 FlowRouter.route('/post/:_id', {
   name: 'post',
   waitOn(params) {
@@ -85,7 +95,7 @@ FlowRouter.route('/post/:_id', {
 ```
 
 Use group context:
-```jsx
+```js
 const account = FlowRouter.group({
   prefix: '/account',
   title: "Account",
@@ -103,7 +113,7 @@ account.route('/settings', {
 ```
 
 To change `title` reactively, just pass it as function:
-```jsx
+```js
 FlowRouter.route('/me/account', {
   name: 'account',
   title() {
@@ -121,10 +131,10 @@ FlowRouter.route('/page/:something', {
 });
 ```
 
-In all examples above `title` can be a *Function* or *String*:
-```jsx
+In all examples below `title` can be a *Function* or *String*:
+```js
 FlowRouter.globals.push({
-  title() {/* ... */}
+  title() {/* ... */} // <-- Suitable for reactive data source
 });
 
 FlowRouter.globals.push({
@@ -132,8 +142,8 @@ FlowRouter.globals.push({
 });
 
 FlowRouter.group({
-  title() {/* ... */},
-  titlePrefix() {/* ... */}
+  title() {/* ... */}, // <-- Suitable for reactive data source
+  titlePrefix() {/* ... */} // <-- Can accept reactive data source, but won't trigger re-computation
 });
 
 FlowRouter.group({
@@ -142,7 +152,7 @@ FlowRouter.group({
 });
 
 FlowRouter.route('/path', {
-  title() {/* ... */}
+  title() {/* ... */} // <-- Reactive
 });
 
 FlowRouter.route('/path', {
