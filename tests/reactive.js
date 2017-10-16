@@ -72,7 +72,7 @@ FlowRouter.route('/reactiveArgsVar/:one/:two', {
   }
 });
 
-Tinytest.addAsync('Title - Reactive - Session', function (test, next) {
+Tinytest.addAsync('Reactive - Session', function (test, next) {
   FlowRouter.go('reactiveSession');
   setTimeout(() => {
     test.equal(document.title, sessionDefault);
@@ -83,7 +83,7 @@ Tinytest.addAsync('Title - Reactive - Session', function (test, next) {
   }, 100);
 });
 
-Tinytest.addAsync('Title - Reactive - Session with args', function (test, next) {
+Tinytest.addAsync('Reactive - Session with args', function (test, next) {
   const one = Random.id();
   const two = Random.id();
   FlowRouter.go('reactiveArgsSession', { one, two });
@@ -96,7 +96,7 @@ Tinytest.addAsync('Title - Reactive - Session with args', function (test, next) 
   }, 100);
 });
 
-Tinytest.addAsync('Title - Reactive - Var', function (test, next) {
+Tinytest.addAsync('Reactive - Var', function (test, next) {
   FlowRouter.go('reactiveVar');
   setTimeout(() => {
     test.equal(document.title, varDefault);
@@ -107,7 +107,7 @@ Tinytest.addAsync('Title - Reactive - Var', function (test, next) {
   }, 100);
 });
 
-Tinytest.addAsync('Title - Reactive - Var with args', function (test, next) {
+Tinytest.addAsync('Reactive - Var with args', function (test, next) {
   const one = Random.id();
   const two = Random.id();
   FlowRouter.go('reactiveArgsVar', { one, two });

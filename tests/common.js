@@ -47,7 +47,7 @@ FlowRouter.route('/thirdPage/:something', {
 
 FlowRouter.go('/');
 
-Tinytest.addAsync('Global Defaults', function (test, next) {
+Tinytest.addAsync('COMMON - Global Defaults', function (test, next) {
   setTimeout(() => {
     test.equal(document.title, defaultTitleStr);
     setTimeout(() => {
@@ -57,7 +57,7 @@ Tinytest.addAsync('Global Defaults', function (test, next) {
   }, 100);
 });
 
-Tinytest.addAsync('Title - String', function (test, next) {
+Tinytest.addAsync('COMMON - Title - String', function (test, next) {
   FlowRouter.go('secondPage');
   setTimeout(() => {
     test.equal(document.title, 'Second Page title');
@@ -65,7 +65,7 @@ Tinytest.addAsync('Title - String', function (test, next) {
   }, 100);
 });
 
-Tinytest.addAsync('Title - Function with dynamic data', function (test, next) {
+Tinytest.addAsync('COMMON - Title - Function with dynamic data', function (test, next) {
   const _str = Random.id();
   FlowRouter.go('thirdPage', {something: _str});
   setTimeout(() => {
@@ -74,10 +74,19 @@ Tinytest.addAsync('Title - Function with dynamic data', function (test, next) {
   }, 100);
 });
 
-Tinytest.addAsync('404 via FlowRouter.notFound', function (test, next) {
+Tinytest.addAsync('COMMON - 404 via FlowRouter.notFound', function (test, next) {
   FlowRouter.go('/not/exists/for/sure');
   setTimeout(() => {
     test.equal(document.title, '404: Page not found');
     next();
   }, 100);
+});
+
+Tinytest.addAsync('COMMON - .set() Method', function (test, next) {
+  const _title = 'Title set via .set() method';
+  titleHandler.set(_title);
+  setTimeout(() => {
+    test.equal(document.title, _title);
+    next();
+  }, 25);
 });
