@@ -27,7 +27,7 @@ FlowRouter.route('/', {
   action() {
     Meteor.setTimeout(() => {
       defaultReactiveTitle.set(defaultNewTitleStr);
-    }, 1024);
+    }, 2048);
   }
 });
 
@@ -53,7 +53,7 @@ Tinytest.addAsync('COMMON - Global Defaults', function (test, next) {
     setTimeout(() => {
       test.equal(document.title, defaultNewTitleStr);
       next();
-    }, 1536);
+    }, 3000);
   }, 100);
 });
 

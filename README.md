@@ -12,11 +12,6 @@ Various ways to set `title`, ordered by prioritization:
  - `FlowRouter.globals`
  - Head template `<title>Text</title>` tag [*might be overridden by any above*]
 
-This package tested and works like a charm with most common Meteor's packages:
- - [subs-manager](https://github.com/kadirahq/subs-manager)
- - [appcache](https://github.com/meteor/meteor/wiki/AppCache)
- - [spiderable](https://github.com/jazeee/jazeee-meteor-spiderable)
-
 Install:
 ========
 ```shell
@@ -25,7 +20,7 @@ meteor add ostrio:flow-router-title
 
 Demos / Tests:
 ========
- - [Source](https://github.com/VeliovGroup/Meteor-flow-router-title/tree/master/demo)
+ - [Demo source](https://github.com/VeliovGroup/Meteor-flow-router-title/tree/master/demo)
  - [Tests](https://github.com/VeliovGroup/Meteor-flow-router-title/tree/master/tests)
 
 ES6 Import:
@@ -33,6 +28,12 @@ ES6 Import:
 ```js
 import { FlowRouterTitle } from 'meteor/ostrio:flow-router-title';
 ```
+
+Related Packages:
+========
+ - [flow-router-meta](https://github.com/VeliovGroup/Meteor-flow-router-meta#reactive-meta-tags-javascript-and-csss) - Per route `meta` tags, `script` and `link` (CSS), set per-route stylesheets and scripts
+ - [flow-router-extra](https://github.com/VeliovGroup/flow-router#flowrouter-extra) - Carefully extended FlowRouter
+
 
 Usage:
 ========
