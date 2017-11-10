@@ -70,7 +70,7 @@ titleHandler.set(() => { return 'Wrapped title'; }); // <- Returns `false`, as f
 ```
 
 #### Function context
-Use function context (with [`data`](https://github.com/VeliovGroup/flow-router#data-hook) hook):
+Use function context (with [`data`](https://github.com/VeliovGroup/flow-router/blob/master/docs/hooks/data.md) hook):
 ```js
 FlowRouter.route('/post/:_id', {
   name: 'post',
