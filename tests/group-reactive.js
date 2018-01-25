@@ -86,7 +86,7 @@ nestedReactiveGroup.route('/witTitle', {
   action() {
     Meteor.setTimeout(() => {
       nestedGroupReactiveVarPagelvl2Title.set(nestedGroupReactiveStrPagelvl2TitleNew);
-    }, 256);
+    }, 3000);
   }
 });
 
@@ -126,10 +126,10 @@ Tinytest.addAsync('Group - Reactive - level 2 - no route title', function (test,
 Tinytest.addAsync('Group - Reactive - level 2 - with route title', function (test, next) {
   FlowRouter.go('reactivelvl2Title');
   setTimeout(() => {
-    test.equal(document.title, groupReactiveStrPrefix + nestedGroupReactiveStrPrefix + nestedGroupReactiveStrPagelvl2Title);
+    test.equal(document.title, groupReactiveStrPrefix + nestedGroupReactiveStrPrefix + nestedGroupReactiveStrPagelvl2Title, 'before reactive update');
     Meteor.setTimeout(() => {
-      test.equal(document.title, groupReactiveStrPrefix + nestedGroupReactiveStrPrefix + nestedGroupReactiveStrPagelvl2TitleNew);
+      test.equal(document.title, groupReactiveStrPrefix + nestedGroupReactiveStrPrefix + nestedGroupReactiveStrPagelvl2TitleNew, 'after reactive update');
       next();
-    }, 512);
+    }, 3512);
   }, 100);
 });

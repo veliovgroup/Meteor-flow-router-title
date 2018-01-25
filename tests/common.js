@@ -45,9 +45,8 @@ FlowRouter.route('/thirdPage/:something', {
   action() {}
 });
 
-FlowRouter.go('/');
-
 Tinytest.addAsync('COMMON - Global Defaults', function (test, next) {
+  FlowRouter.go('/');
   setTimeout(() => {
     test.equal(document.title, defaultTitleStr);
     setTimeout(() => {
