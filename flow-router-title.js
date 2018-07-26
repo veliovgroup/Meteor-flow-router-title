@@ -1,6 +1,57 @@
-import { _ }           from 'meteor/underscore';
 import { Tracker }     from 'meteor/tracker';
 import { ReactiveVar } from 'meteor/reactive-var';
+
+const helpers = {
+  isObject(obj) {
+    if (this.isArray(obj) || this.isFunction(obj)) {
+      return false;
+    }
+    return obj === Object(obj);
+  },
+  isArray(obj) {
+    return Array.isArray(obj);
+  },
+  isFunction(obj) {
+    return typeof obj === 'function' || false;
+  },
+  isEmpty(obj) {
+    if (this.isDate(obj)) {
+      return false;
+    }
+    if (this.isObject(obj)) {
+      return !Object.keys(obj).length;
+    }
+    if (this.isArray(obj) || this.isString(obj)) {
+      return !obj.length;
+    }
+    return false;
+  },
+  has(_obj, path) {
+    let obj = _obj;
+    if (!this.isObject(obj)) {
+      return false;
+    }
+    if (!this.isArray(path)) {
+      return this.isObject(obj) && Object.prototype.hasOwnProperty.call(obj, path);
+    }
+
+    const length = path.length;
+    for (let i = 0; i < length; i++) {
+      if (!Object.prototype.hasOwnProperty.call(obj, path[i])) {
+        return false;
+      }
+      obj = obj[path[i]];
+    }
+    return !!length;
+  }
+};
+
+const _helpers = ['String', 'Date'];
+for (let i = 0; i < _helpers.length; i++) {
+  helpers['is' + _helpers[i]] = function (obj) {
+    return Object.prototype.toString.call(obj) === '[object ' + _helpers[i] + ']';
+  };
+}
 
 export class FlowRouterTitle {
   constructor(router) {
@@ -27,9 +78,9 @@ export class FlowRouterTitle {
           result = cb(result);
         }
 
-        if (_.isString(result)) {
+        if (helpers.isString(result)) {
           self.title.set(result);
-          if (context && context.context && _.isObject(context.context)) {
+          if (context && context.context && helpers.isObject(context.context)) {
             context.context.title = result;
           }
         }
@@ -40,7 +91,7 @@ export class FlowRouterTitle {
     };
 
     this.titleExitHandler = () => {
-      for (var i = computations.length - 1; i >= 0; i--) {
+      for (let i = computations.length - 1; i >= 0; i--) {
         computations[i].stop();
         computations.splice(i, 1);
       }
@@ -49,13 +100,13 @@ export class FlowRouterTitle {
     this.titleHandler = (context, redirect, stop, data) => {
       let _title;
       let defaultTitle = null;
-      const _context = _.extend(context, { query: context.queryParams });
+      const _context = Object.assign({}, context, { query: context.queryParams });
       const _arguments = [context.params, context.queryParams, data];
       let _groupTitlePrefix = this._getParentPrefix(((this.router._current && this.router._current.route && this.router._current.route.group) ? this.router._current.route.group : void 0), _context, _arguments);
 
       if (this.router.globals.length) {
         for (let j = 0; j < this.router.globals.length; j++) {
-          if (_.isObject(this.router.globals[j]) && _.has(this.router.globals[j], 'title')) {
+          if (helpers.isObject(this.router.globals[j]) && helpers.has(this.router.globals[j], 'title')) {
             defaultTitle = this.router.globals[j].title;
             break;
           }
@@ -67,9 +118,9 @@ export class FlowRouterTitle {
         let _groupTitle = (context.route.group.options && context.route.group.options.title) ? context.route.group.options.title : void 0;
 
         const applyRouteTitle = (__routeTitle) => {
-          if (_.isFunction(__routeTitle)) {
+          if (helpers.isFunction(__routeTitle)) {
             return __routeTitle.apply(_context, _arguments);
-          } else if (_.isString(__routeTitle)) {
+          } else if (helpers.isString(__routeTitle)) {
             return __routeTitle;
           }
           return '';
@@ -88,26 +139,26 @@ export class FlowRouterTitle {
           return __title;
         };
 
-        if (_.isFunction(_routeTitle)) {
+        if (helpers.isFunction(_routeTitle)) {
           this._reactivate(_routeTitle, _context, context, _arguments, applyGroupTitle);
           return;
         }
 
-        if (_.isFunction(_groupTitle)) {
+        if (helpers.isFunction(_groupTitle)) {
           this._reactivate(_groupTitle, _context, context, _arguments, applyGroupTitle);
           return;
         }
         _title = applyGroupTitle(_groupTitle);
       } else {
         _title = (context.route.options && context.route.options.title) ? context.route.options.title : (defaultTitle || hardCodedTitle);
-        if (_.isFunction(_title)) {
+        if (helpers.isFunction(_title)) {
           this._reactivate(_title, _context, context, _arguments);
         }
       }
 
-      if (_.isString(_title)) {
+      if (helpers.isString(_title)) {
         self.title.set(_title);
-        if (context && context.context && _.isObject(context.context)) {
+        if (context && context.context && helpers.isObject(context.context)) {
           context.context.title = _title;
         }
       }
@@ -124,8 +175,8 @@ export class FlowRouterTitle {
       };
       _context.route.options.title = (self.router.notFound && self.router.notFound.title) ? self.router.notFound.title : void 0;
 
-      if (!_.isEmpty(self.router._current)) {
-        self.titleHandler(_.extend(self.router._current, _context));
+      if (!helpers.isEmpty(self.router._current)) {
+        self.titleHandler(Object.assign({}, self.router._current, _context));
       } else {
         self.titleHandler(_context);
       }
@@ -134,7 +185,7 @@ export class FlowRouterTitle {
   }
 
   set(str) {
-    if (_.isString(str)) {
+    if (helpers.isString(str)) {
       this.title.set(str);
       return true;
     }
@@ -148,7 +199,7 @@ export class FlowRouterTitle {
       if (group.options && group.options.titlePrefix) {
         if ((_context.route.options && _context.route.options.title && i === 1) || i !== 1) {
           let _gt = group.options.titlePrefix;
-          if (_.isFunction(_gt)) {
+          if (helpers.isFunction(_gt)) {
             _gt = _gt.apply(_context, _arguments);
           }
           prefix += _gt;

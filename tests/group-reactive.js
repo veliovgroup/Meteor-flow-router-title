@@ -13,6 +13,15 @@ const groupReactiveVarTitle    = new ReactiveVar(groupReactiveStrTitle);
 const groupReactiveStrPrefix    = 'Reactive Group > ';
 const groupReactiveVarPrefix    = new ReactiveVar(groupReactiveStrPrefix);
 
+
+Meteor.startup(() => {
+  try {
+    FlowRouter.go('/');
+  } catch (e) {
+    // we're good
+  }
+});
+
 const groupReactive = FlowRouter.group({
   prefix: '/group-reactive',
   title() {
@@ -86,7 +95,7 @@ nestedReactiveGroup.route('/witTitle', {
   action() {
     Meteor.setTimeout(() => {
       nestedGroupReactiveVarPagelvl2Title.set(nestedGroupReactiveStrPagelvl2TitleNew);
-    }, 3000);
+    }, 256);
   }
 });
 
@@ -98,7 +107,7 @@ Tinytest.addAsync('Group - Reactive - level 1 - no route title', function (test,
       test.equal(document.title, groupReactiveStrTitleNew);
       next();
     }, 512);
-  }, 100);
+  }, 10);
 });
 
 Tinytest.addAsync('Group - Reactive - level 1 - with route title', function (test, next) {
@@ -109,7 +118,7 @@ Tinytest.addAsync('Group - Reactive - level 1 - with route title', function (tes
       test.equal(document.title, groupReactiveStrPrefix + groupReactiveStrPage2TitleNew);
       next();
     }, 512);
-  }, 100);
+  }, 10);
 });
 
 Tinytest.addAsync('Group - Reactive - level 2 - no route title', function (test, next) {
@@ -120,7 +129,7 @@ Tinytest.addAsync('Group - Reactive - level 2 - no route title', function (test,
       test.equal(document.title, groupReactiveStrPrefix + nestedGroupReactiveStrTitleNew);
       next();
     }, 512);
-  }, 100);
+  }, 10);
 });
 
 Tinytest.addAsync('Group - Reactive - level 2 - with route title', function (test, next) {
@@ -130,6 +139,6 @@ Tinytest.addAsync('Group - Reactive - level 2 - with route title', function (tes
     Meteor.setTimeout(() => {
       test.equal(document.title, groupReactiveStrPrefix + nestedGroupReactiveStrPrefix + nestedGroupReactiveStrPagelvl2TitleNew, 'after reactive update');
       next();
-    }, 3512);
-  }, 100);
+    }, 512);
+  }, 10);
 });
