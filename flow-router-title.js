@@ -64,7 +64,9 @@ export class FlowRouterTitle {
         if (!hardCodedTitle) {
           hardCodedTitle = document.title;
         }
-        document.title = newValue;
+        setTimeout(() => {
+          document.title = newValue;
+        }, 0);
         this.curValue = newValue;
       }
     };
