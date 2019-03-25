@@ -87,7 +87,7 @@ const nestedGroupReactiveStrPagelvl2Title    = 'Reactive Level 2 page';
 const nestedGroupReactiveStrPagelvl2TitleNew = 'NEW Reactive Level 2 page';
 const nestedGroupReactiveVarPagelvl2Title    = new ReactiveVar(nestedGroupReactiveStrPagelvl2Title);
 
-nestedReactiveGroup.route('/witTitle', {
+nestedReactiveGroup.route('/withTitle', {
   name: 'reactivelvl2Title',
   title() {
     return nestedGroupReactiveVarPagelvl2Title.get();
