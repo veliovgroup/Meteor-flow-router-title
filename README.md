@@ -96,9 +96,8 @@ FlowRouter.route('/post/:_id', {
   title(params, query, data) {
     if (data) {
       return data.title;
-    } else {
-      return '404: Page not found';
     }
+    return '404: Page not found';
   }
 });
 ```
