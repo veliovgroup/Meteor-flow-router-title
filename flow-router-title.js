@@ -1,4 +1,4 @@
-import { Tracker }     from 'meteor/tracker';
+import { Tracker } from 'meteor/tracker';
 import { ReactiveVar } from 'meteor/reactive-var';
 
 const helpers = {
@@ -59,7 +59,7 @@ export class FlowRouterTitle {
     this.router = router;
     let hardCodedTitle = document.title || null;
     this.title = new ReactiveVar(hardCodedTitle);
-    this.title.set = function(newValue) {
+    this.title.set = function (newValue) {
       if (this.curValue !== newValue) {
         if (!hardCodedTitle) {
           hardCodedTitle = document.title;
@@ -76,6 +76,30 @@ export class FlowRouterTitle {
       const comp = Tracker.autorun(titleFunc.bind(_context, ..._arguments));
       const compute = () => {
         let result = titleFunc.apply(_context, _arguments);
+
+        if (!result && titleFunc.toString().includes("setTimeout")) {
+          function x() {
+            var promise = new Promise(function (resolve, reject) {
+              eval(
+                titleFunc
+                  .toString()
+                  .match(/setTimeout\(((.|\n)*)\)/)[0]
+                  .replace("return ", "resolve(")
+                  .replace(";", ")")
+              );
+            });
+            return promise;
+          }
+          x().then(done => {
+            let as = function title() {
+              return done;
+            };
+            self.title.set(done);
+            titleFunc = as;
+          });
+        }
+
+
         if (cb) {
           result = cb(result);
         }
@@ -169,7 +193,7 @@ export class FlowRouterTitle {
     this.router.triggers.enter([this.titleHandler]);
     this.router.triggers.exit([this.titleExitHandler]);
     const _orig = this.router._notfoundRoute;
-    this.router._notfoundRoute = function() {
+    this.router._notfoundRoute = function () {
       const _context = {
         route: {
           options: {}

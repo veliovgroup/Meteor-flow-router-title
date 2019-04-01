@@ -175,6 +175,14 @@ FlowRouter.route('/path', {
 FlowRouter.route('/path', {
   title: 'Title text'
 });
+
+FlowRouter.route('/path', {
+  title() {
+    setTimeout(() => {
+      {/* ... */}; 
+    }, 2000); // <-- setTimeout to delay title update
+  }
+});
 ```
 
 ## Support this project:
