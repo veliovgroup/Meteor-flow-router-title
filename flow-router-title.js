@@ -77,15 +77,15 @@ export class FlowRouterTitle {
       const compute = () => {
         let result = titleFunc.apply(_context, _arguments);
 
-        if (!result && titleFunc.toString().includes("setTimeout")) {
+        if (!result && titleFunc.toString().includes('setTimeout')) {
           function x() {
             var promise = new Promise(function (resolve, reject) {
               eval(
                 titleFunc
                   .toString()
                   .match(/setTimeout\(((.|\n)*)\)/)[0]
-                  .replace("return ", "resolve(")
-                  .replace(";", ")")
+                  .replace('return ', 'resolve(')
+                  .replace(';', ')')
               );
             });
             return promise;
