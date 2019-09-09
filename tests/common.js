@@ -1,7 +1,8 @@
-import { Meteor }      from 'meteor/meteor';
-import { Random }      from 'meteor/random';
-import { FlowRouter }  from 'meteor/ostrio:flow-router-extra';
-import { ReactiveVar } from 'meteor/reactive-var';
+import { Meteor }       from 'meteor/meteor';
+import { Random }       from 'meteor/random';
+import { FlowRouter }   from 'meteor/ostrio:flow-router-extra';
+import { ReactiveVar }  from 'meteor/reactive-var';
+import { titleHandler } from './init.js';
 
 if (Meteor.isServer) {
   return;
@@ -15,11 +16,6 @@ FlowRouter.globals.push({
   title() {
     return defaultReactiveTitle.get();
   }
-});
-
-FlowRouter.route('*', {
-  action() {},
-  title: '404: Page not found'
 });
 
 FlowRouter.route('/', {
@@ -88,4 +84,11 @@ Tinytest.addAsync('COMMON - .set() Method', function (test, next) {
     test.equal(document.title, _title);
     next();
   }, 25);
+});
+
+Meteor.startup(() => {
+  FlowRouter.route('*', {
+    action() {},
+    title: '404: Page not found'
+  });
 });
