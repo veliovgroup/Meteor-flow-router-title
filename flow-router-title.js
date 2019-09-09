@@ -73,7 +73,6 @@ export class FlowRouterTitle {
 
     const computations = [];
     this._reactivate = (titleFunc, _context, context, _arguments, cb) => {
-      const comp = Tracker.autorun(titleFunc.bind(_context, ..._arguments));
       const compute = () => {
         let result = titleFunc.apply(_context, _arguments);
         if (cb) {
@@ -87,8 +86,9 @@ export class FlowRouterTitle {
           }
         }
       };
-      comp.onInvalidate(compute);
-      compute();
+
+      const comp = Tracker.autorun(compute);
+
       computations.push(comp);
     };
 
