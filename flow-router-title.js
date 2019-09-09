@@ -88,7 +88,6 @@ export class FlowRouterTitle {
       };
 
       const comp = Tracker.autorun(compute);
-
       computations.push(comp);
     };
 
