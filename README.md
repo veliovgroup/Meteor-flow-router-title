@@ -6,9 +6,9 @@
 
 Change `document.title` on the fly within [flow-router-extra](https://github.com/VeliovGroup/flow-router).
 
-Features:
+## Features:
 
-- 👷‍♂️ 100% tests coverage;
+- 👨‍🔬 __100% tests coverage__;
 - 🎛 Per route, per group, and default (*all routes*) `title` tag.
 
 Various ways to set `title`, ordered by prioritization:
