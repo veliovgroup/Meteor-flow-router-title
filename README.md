@@ -6,7 +6,7 @@
 
 # Reactive page title
 
-Change `document.title` on the fly within [flow-router-extra](https://github.com/VeliovGroup/flow-router).
+Change `document.title` on the fly within [flow-router-extra](https://github.com/veliovgroup/flow-router).
 
 ## Features:
 
@@ -28,8 +28,8 @@ meteor add ostrio:flow-router-title
 
 ## Demos / Tests:
 
-- [Demo source](https://github.com/VeliovGroup/Meteor-flow-router-title/tree/master/demo)
-- [Tests](https://github.com/VeliovGroup/Meteor-flow-router-title/tree/master/tests)
+- [Demo source](https://github.com/veliovgroup/Meteor-flow-router-title/tree/master/demo)
+- [Tests](https://github.com/veliovgroup/Meteor-flow-router-title/tree/master/tests)
 
 ## ES6 Import:
 
@@ -39,8 +39,8 @@ import { FlowRouterTitle } from 'meteor/ostrio:flow-router-title';
 
 ## Related Packages:
 
-- [flow-router-meta](https://github.com/VeliovGroup/Meteor-flow-router-meta#reactive-meta-tags-javascript-and-csss) - Per route `meta` tags, `script` and `link` (CSS), set per-route stylesheets and scripts
-- [flow-router-extra](https://github.com/VeliovGroup/flow-router#flowrouter-extra) - Carefully extended FlowRouter
+- [flow-router-meta](https://github.com/veliovgroup/Meteor-flow-router-meta#reactive-meta-tags-javascript-and-csss) - Per route `meta` tags, `script` and `link` (CSS), set per-route stylesheets and scripts
+- [flow-router-extra](https://github.com/veliovgroup/flow-router#flowrouter-extra) - Carefully extended FlowRouter
 
 ## Usage:
 
@@ -91,7 +91,7 @@ titleHandler.set(() => { return 'Wrapped title'; }); // <- Returns `false`, as f
 
 ### Function context
 
-Use function context (with [`data`](https://github.com/VeliovGroup/flow-router/blob/master/docs/hooks/data.md) hook):
+Use function context (with [`data`](https://github.com/veliovgroup/flow-router/blob/master/docs/hooks/data.md) hook):
 
 ```js
 FlowRouter.route('/post/:_id', {
