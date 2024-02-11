@@ -1,9 +1,9 @@
-import { Tracker }     from 'meteor/tracker';
+import { Tracker } from 'meteor/tracker';
 import { ReactiveVar } from 'meteor/reactive-var';
 
 const helpers = {
   isObject(obj) {
-    if (this.isArray(obj) || this.isFunction(obj)) {
+    if (this.isArray(obj) || this.isFunction(obj) || obj === null) {
       return false;
     }
     return obj === Object(obj);
@@ -48,21 +48,78 @@ const helpers = {
 
 const _helpers = ['String', 'Date'];
 for (let i = 0; i < _helpers.length; i++) {
-  helpers['is' + _helpers[i]] = function (obj) {
-    return Object.prototype.toString.call(obj) === '[object ' + _helpers[i] + ']';
+  helpers[`is${_helpers[i]}`] = function (obj) {
+    return Object.prototype.toString.call(obj) === `[object ${_helpers[i]}]`;
   };
 }
+
+const applyRouteTitle = (title, context, args) => {
+  if (helpers.isFunction(title)) {
+    return title.apply(context, args);
+  } else if (helpers.isString(title)) {
+    return title;
+  }
+  return '';
+};
+
+const getParentPrefix = (group, context, args, _i = 0) => {
+  let prefix = '';
+  const i = _i + 1;
+  if (group) {
+    if (group.options && group.options.titlePrefix) {
+      if ((context.route?.options?.title && i === 1) || i !== 1) {
+        let _gt = group.options.titlePrefix;
+        if (helpers.isFunction(_gt)) {
+          _gt = _gt.apply(context, args);
+        }
+        prefix += _gt;
+      }
+    }
+
+    if (group.parent) {
+      prefix = getParentPrefix(group.parent, context, args, i) + prefix;
+    }
+  }
+  return prefix;
+};
+
+const applyGroupTitle = function (groupTitle, context, args) {
+  let title = '';
+  const routeTitle = applyRouteTitle(context.route?.options?.title, context, args);
+  const groupTitlePrefix = getParentPrefix(((this.router._current?.route?.group) ? this.router._current.route.group : void 0), context, args);
+
+  if (!routeTitle) {
+    title = groupTitlePrefix + applyRouteTitle(groupTitle || this.defaultTitle || this.hardCodedTitle, context, args);
+  } else if (routeTitle && groupTitlePrefix) {
+    title = groupTitlePrefix + routeTitle;
+  } else {
+    title = groupTitlePrefix + applyRouteTitle(routeTitle || this.defaultTitle || this.hardCodedTitle, context, args);
+  }
+  return title;
+};
 
 export class FlowRouterTitle {
   constructor(router) {
     const self = this;
+    const computations = [];
     this.router = router;
-    let hardCodedTitle = document.title || null;
-    this.title = new ReactiveVar(hardCodedTitle);
+    this.hardCodedTitle = document.title || null;
+    this.defaultTitle = null;
+
+    if (this.router.globals.length) {
+      for (let j = 0; j < this.router.globals.length; j++) {
+        if (helpers.isObject(this.router.globals[j]) && helpers.has(this.router.globals[j], 'title')) {
+          this.defaultTitle = this.router.globals[j].title;
+          break;
+        }
+      }
+    }
+
+    this.title = new ReactiveVar(this.hardCodedTitle);
     this.title.set = function(newValue) {
       if (this.curValue !== newValue) {
-        if (!hardCodedTitle) {
-          hardCodedTitle = document.title;
+        if (!self.hardCodedTitle) {
+          self.hardCodedTitle = document.title;
         }
         setTimeout(() => {
           document.title = newValue;
@@ -71,17 +128,16 @@ export class FlowRouterTitle {
       }
     };
 
-    const computations = [];
-    this._reactivate = (titleFunc, _context, context, _arguments, cb) => {
+    this._reactivate = (titleFunc, context, _arguments, cb) => {
       const compute = () => {
-        let result = titleFunc.apply(_context, _arguments);
+        let result = titleFunc.apply(context, _arguments);
         if (cb) {
-          result = cb(result);
+          result = cb.call(this, result, context, _arguments);
         }
 
         if (helpers.isString(result)) {
           self.title.set(result);
-          if (context && context.context && helpers.isObject(context.context)) {
+          if (context?.context) {
             context.context.title = result;
           }
         }
@@ -100,66 +156,33 @@ export class FlowRouterTitle {
 
     this.titleHandler = (context, redirect, stop, data) => {
       let _title;
-      let defaultTitle = null;
       const _context = Object.assign({}, context, { query: context.queryParams });
       const _arguments = [context.params, context.queryParams, data];
-      let _groupTitlePrefix = this._getParentPrefix(((this.router._current && this.router._current.route && this.router._current.route.group) ? this.router._current.route.group : void 0), _context, _arguments);
 
-      if (this.router.globals.length) {
-        for (let j = 0; j < this.router.globals.length; j++) {
-          if (helpers.isObject(this.router.globals[j]) && helpers.has(this.router.globals[j], 'title')) {
-            defaultTitle = this.router.globals[j].title;
-            break;
-          }
-        }
-      }
-
-      if (context.route && context.route.group && context.route.group.options) {
-        let _routeTitle = (context.route.options && context.route.options.title) ? context.route.options.title : void 0;
-        let _groupTitle = (context.route.group.options && context.route.group.options.title) ? context.route.group.options.title : void 0;
-
-        const applyRouteTitle = (__routeTitle) => {
-          if (helpers.isFunction(__routeTitle)) {
-            return __routeTitle.apply(_context, _arguments);
-          } else if (helpers.isString(__routeTitle)) {
-            return __routeTitle;
-          }
-          return '';
-        };
-
-        const applyGroupTitle = (__groupTitle) => {
-          let __title = '';
-          const __routeTitle = applyRouteTitle(_routeTitle);
-          if (!__routeTitle) {
-            __title = _groupTitlePrefix + applyRouteTitle(__groupTitle || defaultTitle || hardCodedTitle);
-          } else if (__routeTitle && _groupTitlePrefix) {
-            __title = _groupTitlePrefix + __routeTitle;
-          } else {
-            __title = _groupTitlePrefix + applyRouteTitle(__routeTitle || defaultTitle || hardCodedTitle);
-          }
-          return __title;
-        };
+      if (context.route?.group?.options) {
+        const _routeTitle = (context.route.options?.title) ? context.route.options.title : void 0;
+        const _groupTitle = (context.route.group.options?.title) ? context.route.group.options.title : void 0;
 
         if (helpers.isFunction(_routeTitle)) {
-          this._reactivate(_routeTitle, _context, context, _arguments, applyGroupTitle);
+          this._reactivate(_routeTitle, _context, _arguments, applyGroupTitle.bind(this));
           return;
         }
 
         if (helpers.isFunction(_groupTitle)) {
-          this._reactivate(_groupTitle, _context, context, _arguments, applyGroupTitle);
+          this._reactivate(_groupTitle, _context, _arguments, applyGroupTitle.bind(this));
           return;
         }
-        _title = applyGroupTitle(_groupTitle);
+        _title = applyGroupTitle.call(this, _groupTitle, _context, _arguments);
       } else {
-        _title = (context.route.options && context.route.options.title) ? context.route.options.title : (defaultTitle || hardCodedTitle);
+        _title = (context.route.options?.title) ? context.route.options.title : (this.defaultTitle || this.hardCodedTitle);
         if (helpers.isFunction(_title)) {
-          this._reactivate(_title, _context, context, _arguments);
+          this._reactivate(_title, _context, _arguments);
         }
       }
 
       if (helpers.isString(_title)) {
         self.title.set(_title);
-        if (context && context.context && helpers.isObject(context.context)) {
+        if (context?.context && helpers.isObject(context.context)) {
           context.context.title = _title;
         }
       }
@@ -191,26 +214,5 @@ export class FlowRouterTitle {
       return true;
     }
     return false;
-  }
-
-  _getParentPrefix(group, _context, _arguments, i = 0) {
-    let prefix = '';
-    i++;
-    if (group) {
-      if (group.options && group.options.titlePrefix) {
-        if ((_context.route.options && _context.route.options.title && i === 1) || i !== 1) {
-          let _gt = group.options.titlePrefix;
-          if (helpers.isFunction(_gt)) {
-            _gt = _gt.apply(_context, _arguments);
-          }
-          prefix += _gt;
-        }
-      }
-
-      if (group.parent) {
-        prefix = this._getParentPrefix(group.parent, _context, _arguments, i) + prefix;
-      }
-    }
-    return prefix;
   }
 }

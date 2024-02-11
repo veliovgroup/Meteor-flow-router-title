@@ -2,7 +2,6 @@ import { Meteor }       from 'meteor/meteor';
 import { Random }       from 'meteor/random';
 import { FlowRouter }   from 'meteor/ostrio:flow-router-extra';
 import { ReactiveVar }  from 'meteor/reactive-var';
-import { titleHandler } from './init.js';
 
 if (Meteor.isServer) {
   return;
@@ -23,7 +22,7 @@ FlowRouter.route('/', {
   action() {
     Meteor.setTimeout(() => {
       defaultReactiveTitle.set(defaultNewTitleStr);
-    }, 2048);
+    }, 50);
   }
 });
 
@@ -43,12 +42,10 @@ FlowRouter.route('/thirdPage/:something', {
 
 Tinytest.addAsync('COMMON - Global Defaults', function (test, next) {
   FlowRouter.go('/');
+  test.equal(document.title, defaultTitleStr);
   setTimeout(() => {
-    test.equal(document.title, defaultTitleStr);
-    setTimeout(() => {
-      test.equal(document.title, defaultNewTitleStr);
-      next();
-    }, 3000);
+    test.equal(document.title, defaultNewTitleStr);
+    next();
   }, 100);
 });
 
@@ -79,16 +76,14 @@ Tinytest.addAsync('COMMON - 404 via FlowRouter.notFound', function (test, next) 
 
 Tinytest.addAsync('COMMON - .set() Method', function (test, next) {
   const _title = 'Title set via .set() method';
-  titleHandler.set(_title);
+  Meteor.__test.titleHandler.set(_title);
   setTimeout(() => {
     test.equal(document.title, _title);
     next();
   }, 25);
 });
 
-Meteor.startup(() => {
-  FlowRouter.route('*', {
-    action() {},
-    title: '404: Page not found'
-  });
+FlowRouter.route('*', {
+  action() {},
+  title: '404: Page not found'
 });
