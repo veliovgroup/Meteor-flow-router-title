@@ -1,8 +1,7 @@
 [![support](https://img.shields.io/badge/support-GitHub-white)](https://github.com/sponsors/dr-dimitru)
 [![support](https://img.shields.io/badge/support-PayPal-white)](https://paypal.me/veliovgroup)
-<a href="https://ostr.io/info/built-by-developers-for-developers">
-  <img src="https://ostr.io/apple-touch-icon-60x60.png" height="20">
-</a>
+<a href="https://ostr.io/info/built-by-developers-for-developers?ref=github-flowroutertitle-repo-top"><img src="https://ostr.io/apple-touch-icon-60x60.png" height="20"></a>
+<a href="https://meteor-files.com/?ref=github-flowroutertitle-repo-top"><img src="https://meteor-files.com/apple-touch-icon-60x60.png" height="20"></a>
 
 # Reactive page title
 
@@ -209,6 +208,9 @@ MONGO_URL="mongodb://127.0.0.1:27017/flow-router-title-tests" meteor test-packag
 
 ## Support this project:
 
+- Upload and share files using [☄️ meteor-files.com](https://meteor-files.com/?ref=github-flowroutertitle-repo-footer) — Continue interrupted file uploads without losing any progress. There is nothing that will stop Meteor from delivering your file to the desired destination
+- Use [▲ ostr.io](https://ostr.io?ref=github-flowroutertitle-repo-footer) for [Server Monitoring](https://snmp-monitoring.com), [Web Analytics](https://ostr.io/info/web-analytics?ref=github-flowroutertitle-repo-footer), [WebSec](https://domain-protection.info), [Web-CRON](https://web-cron.info) and [SEO Pre-rendering](https://prerendering.com) of a website
+- Star on [GitHub](https://github.com/veliovgroup/Meteor-flow-router-title)
+- Star on [Atmosphere](https://atmospherejs.com/ostrio/flow-router-title)
 - [Sponsor via GitHub](https://github.com/sponsors/dr-dimitru)
-- [Support via PayPal](https://paypal.me/veliovgroup) — support my open source contributions once or on regular basis
-- Use [ostr.io](https://ostr.io) — [Monitoring](https://snmp-monitoring.com), [Analytics](https://ostr.io/info/web-analytics), [WebSec](https://domain-protection.info), [Web-CRON](https://web-cron.info) and [Pre-rendering](https://prerendering.com) for a website
+- [Support via PayPal](https://paypal.me/veliovgroup)
