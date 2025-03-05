@@ -7,46 +7,78 @@
 
 Change `document.title` on the fly in [Meteor.js](https://docs.meteor.com/?utm_source=dr.dimitru&utm_medium=online&utm_campaign=Q2-2022-Ambassadors) apps via [flow-router-extra](https://github.com/veliovgroup/flow-router) API.
 
-## Features:
+## ToC
 
-- 👨‍🔬 __100% tests coverage__;
-- 🎛 Per route, per group, and default (*all routes*) `title` tag.
+- [Installation](#installation)
+- [Demos](#demos)
+- [ES6 Import](#es6-import)
+- [Related Packages](#related-packages)
+- [API](#api)
+- [Usage](#usage)
+  - [Set title via Route](#set-title-via-route)
+  - [`FlowRouterTitle#set()` method](#set-method)
+  - [Function Context](#function-context)
+  - [Group Context](#group-context)
+  - [Reactive data sources](#reactive-data-sources)
+  - [More examples](#more-examples)
+- [Running tests](#running-tests)
+- [Support this package](#support-this-project)
 
-Various ways to set `title`, ordered by prioritization:
+## Features
+
+- 👨‍🔬 __100% tests coverage__
+- ✨ Use prefixes for groups, including nesting
+- 🎛 Per route, per group, and default (*all routes*) `title` tag
+
+Various ways to set `title`, *ordered by priority*:
 
 - `FlowRouter.route()` [*overrides all below*]
 - `FlowRouter.group()`
 - `FlowRouter.globals`
-- Head template `<title>Text</title>` tag [*might be overridden by any above*]
+- Head template `<title>Text</title>` tag [*superseded by any above*]
 
-## Install:
+## Installation
 
 ```shell
 meteor add ostrio:flow-router-title
 ```
 
-## Demos / Tests:
+## Demos
 
 - [Demo source](https://github.com/veliovgroup/Meteor-flow-router-title/tree/master/demo)
 - [Tests](https://github.com/veliovgroup/Meteor-flow-router-title/tree/master/tests)
 
-## ES6 Import:
+## ES6 Import
 
 ```js
 import { FlowRouterTitle } from 'meteor/ostrio:flow-router-title';
 ```
 
-## Related Packages:
+## Related Packages
 
-- [flow-router-meta](https://github.com/veliovgroup/Meteor-flow-router-meta#reactive-meta-tags-javascript-and-csss) - Per route `meta` tags, `script` and `link` (CSS), set per-route stylesheets and scripts
+`flow-router-title` performs the best when used with the next packages:
+
+- [flow-router-meta](https://github.com/veliovgroup/Meteor-flow-router-meta#reactive-meta-tags-javascript-and-csss) - Per route `meta` tags, `script`, and `link` (*e.g. CSS*) — set per-route meta-tags, stylesheets, and scripts
 - [flow-router-extra](https://github.com/veliovgroup/flow-router#flowrouter-extra) - Carefully extended FlowRouter
 
-## Usage:
+## API
+
+- `new FlowRouterTitle(FlowRouter)` — The main `FlowRouterTitle` constructor that accepts `FlowRouter` as the only argument
+- `FlowRouterTitle#set(title: string)` — The only method that changes `document.title` during runtime
+
+After `new FlowRouterTitle(FlowRouter)` instance is initiated it extends `FlowRouter.router()` and `FlowRouter.group()` methods and `FlowRouter.globals` with support of:
+
+- `title: string` — String property
+- `title: function(params, qs, data) => string` — Method returning string
+- `titlePrefix: string` — String property for page's title prefix
+- `titlePrefix: function(params, qs, data) => string` — Method returning string for page's title prefix
+
+## Usage
 
 Initialize `FlowRouterTitle` class by passing `FlowRouter` object. Right after creating all routes:
 
 ```js
-import { FlowRouter }      from 'meteor/ostrio:flow-router-extra';
+import { FlowRouter } from 'meteor/ostrio:flow-router-extra';
 import { FlowRouterTitle } from 'meteor/ostrio:flow-router-title';
 
 FlowRouter.route('/', {
@@ -55,7 +87,7 @@ FlowRouter.route('/', {
   /* ... */
 });
 
-new FlowRouterTitle(FlowRouter);
+const titleHandler = new FlowRouterTitle(FlowRouter);
 ```
 
 ### Set title via Route
@@ -83,14 +115,16 @@ Set `document.title` during runtime (*without route(s)*):
 FlowRouter.route('/', {/* ... */});
 
 const titleHandler = new FlowRouterTitle(FlowRouter);
-// `.set()` method accepts only String
 titleHandler.set('My Awesome Title String'); // <- Returns `true`
-titleHandler.set(() => { return 'Wrapped title'; }); // <- Returns `false`, as function can't be set into the `document.title`
+
+// `.set()` method accepts {string} only
+// Invalid values won't throw an exception
+// instead it will simply return `false`
 ```
 
 ### Function context
 
-Use function context (with [`data`](https://github.com/veliovgroup/flow-router/blob/master/docs/hooks/data.md) hook):
+Use function context (*with [`data`](https://github.com/veliovgroup/flow-router/blob/master/docs/hooks/data.md) hook*):
 
 ```js
 FlowRouter.route('/post/:_id', {
@@ -98,8 +132,8 @@ FlowRouter.route('/post/:_id', {
   waitOn(params) {
     return [Meteor.subscribe('post', params._id)];
   },
-  data(params) {
-    return Collections.Posts.findOne(params._id);
+  async data(params) {
+    return await Collections.Posts.findOneAsync(params._id);
   },
   title(params, query, data) {
     if (data) {
@@ -145,10 +179,10 @@ FlowRouter.route('/me/account', {
 });
 
 // Use params from route
-FlowRouter.route('/page/:something', {
+FlowRouter.route('/page/:_id/:slug', {
   name: 'somePage',
   title(params) {
-    return 'Page ' + params.something;
+    return `Page ${params.slug}`;
   }
 });
 ```
@@ -206,7 +240,7 @@ meteor test-packages ./ --port 8888
 MONGO_URL="mongodb://127.0.0.1:27017/flow-router-title-tests" meteor test-packages ./ --port 8888
 ```
 
-## Support this project:
+## Support this project
 
 - Upload and share files using [☄️ meteor-files.com](https://meteor-files.com/?ref=github-flowroutertitle-repo-footer) — Continue interrupted file uploads without losing any progress. There is nothing that will stop Meteor from delivering your file to the desired destination
 - Use [▲ ostr.io](https://ostr.io?ref=github-flowroutertitle-repo-footer) for [Server Monitoring](https://snmp-monitoring.com), [Web Analytics](https://ostr.io/info/web-analytics?ref=github-flowroutertitle-repo-footer), [WebSec](https://domain-protection.info), [Web-CRON](https://web-cron.info) and [SEO Pre-rendering](https://prerendering.com) of a website
