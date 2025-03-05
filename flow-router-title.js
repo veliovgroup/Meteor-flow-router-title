@@ -154,7 +154,7 @@ export class FlowRouterTitle {
       }
     };
 
-    this.titleHandler = (context, redirect, stop, data) => {
+    this.titleHandler = (context, _redirect, _stop, data) => {
       let _title;
       const _context = Object.assign({}, context, { query: context.queryParams });
       const _arguments = [context.params, context.queryParams, data];
