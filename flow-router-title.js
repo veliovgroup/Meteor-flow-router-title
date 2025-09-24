@@ -3,7 +3,7 @@ import { ReactiveVar } from 'meteor/reactive-var';
 
 const helpers = {
   isObject(obj) {
-    if (this.isArray(obj) || this.isFunction(obj) || obj === null) {
+    if (obj === null || this.isArray(obj) || this.isFunction(obj)) {
       return false;
     }
     return obj === Object(obj);
@@ -12,7 +12,7 @@ const helpers = {
     return Array.isArray(obj);
   },
   isFunction(obj) {
-    return typeof obj === 'function' || false;
+    return typeof obj === 'function';
   },
   isEmpty(obj) {
     if (this.isDate(obj)) {
@@ -26,32 +26,22 @@ const helpers = {
     }
     return false;
   },
-  has(_obj, path) {
-    let obj = _obj;
+  has(obj, path) {
     if (!this.isObject(obj)) {
       return false;
     }
     if (!this.isArray(path)) {
       return this.isObject(obj) && Object.prototype.hasOwnProperty.call(obj, path);
     }
-
-    const length = path.length;
-    for (let i = 0; i < length; i++) {
-      if (!Object.prototype.hasOwnProperty.call(obj, path[i])) {
-        return false;
-      }
-      obj = obj[path[i]];
-    }
-    return !!length;
+    return false;
+  },
+  isString(obj) {
+    return Object.prototype.toString.call(obj) === '[object String]';
+  },
+  isDate(obj) {
+    return Object.prototype.toString.call(obj) === '[object Date]';
   }
 };
-
-const _helpers = ['String', 'Date'];
-for (let i = 0; i < _helpers.length; i++) {
-  helpers[`is${_helpers[i]}`] = function (obj) {
-    return Object.prototype.toString.call(obj) === `[object ${_helpers[i]}]`;
-  };
-}
 
 const applyRouteTitle = (title, context, args) => {
   if (helpers.isFunction(title)) {
