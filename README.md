@@ -90,6 +90,15 @@ FlowRouter.route('/', {
 const titleHandler = new FlowRouterTitle(FlowRouter);
 ```
 
+### 404 / notFound compatibility
+
+`ostrio:flow-router-title` supports both 404 styles in `ostrio:flow-router-extra`:
+
+- Recommended: catch-all route via `FlowRouter.route('*', { title, action })`
+- Legacy/deprecated API: `FlowRouter.notFound = { title, action }`
+
+When both are present, latest registration wins, same as regular route registration order.
+
 ### Set title via Route
 
 Set `title` property in route's or group's configuration:
