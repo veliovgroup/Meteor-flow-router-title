@@ -74,6 +74,22 @@ Tinytest.addAsync('COMMON - 404 via FlowRouter.notFound', function (test, next) 
   }, 100);
 });
 
+Tinytest.addAsync('COMMON - 404 via FlowRouter.notFound setter', function (test, next) {
+  FlowRouter.notFound = {
+    title: '404: Set via notFound setter',
+    action() {}
+  };
+  FlowRouter.go('/not/exists/for/sure/again');
+  setTimeout(() => {
+    test.equal(document.title, '404: Set via notFound setter');
+    FlowRouter.route('*', {
+      action() {},
+      title: '404: Page not found'
+    });
+    next();
+  }, 100);
+});
+
 Tinytest.addAsync('COMMON - .set() Method', function (test, next) {
   const _title = 'Title set via .set() method';
   Meteor.__test.titleHandler.set(_title);
