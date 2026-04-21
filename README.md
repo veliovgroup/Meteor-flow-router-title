@@ -43,6 +43,11 @@ Various ways to set `title`, *ordered by priority*:
 meteor add ostrio:flow-router-title
 ```
 
+### Compatibility
+
+- Meteor `>=1.4`, including latest Meteor `3.4`;
+- Requires `ostrio:flow-router-extra@3.14.0+`.
+
 ## Demos
 
 - [Demo source](https://github.com/veliovgroup/Meteor-flow-router-title/tree/master/demo)
@@ -52,6 +57,39 @@ meteor add ostrio:flow-router-title
 
 ```js
 import { FlowRouterTitle } from 'meteor/ostrio:flow-router-title';
+```
+
+### AGENTS.md
+
+The repo ships [`AGENTS.md`](https://github.com/veliovgroup/Meteor-flow-router-title/blob/master/AGENTS.md): a compact **implementation map** for `ostrio:flow-router-title`. It complements API in this document.
+
+### SKILLS.md
+
+- The main `ostrio:flow-router-extra` package ships a bundled skill at **`.agents/skills/meteor-flow-router/SKILL.md`** (covers **`ostrio:flow-router-extra`**, **`ostrio:flow-router-meta`**, **`ostrio:flow-router-title`**). Install into your project with the [Skills CLI](https://www.npmjs.com/package/skills) (`npx skills`):
+
+```bash
+# From a Meteor app repo (install into that app’s .agents/skills for Cursor, etc.)
+npx skills add veliovgroup/flow-router --skill meteor-flow-router
+
+# Only list skills discovered in the Flow Router repo (no install)
+npx skills add veliovgroup/flow-router --list
+
+# User-global Cursor skills dir (~/.cursor/skills)
+npx skills add veliovgroup/flow-router --skill meteor-flow-router --agent cursor --global --yes
+```
+
+### TypeScript
+
+- Package ships `index.d.ts` as a Meteor asset. Apps using **`zodern:types`** resolve typings for `meteor/ostrio:flow-router-title` automatically.
+- Import only from **client** code (same as this package’s `mainModule`).
+- Constructor expects `FlowRouter` from `meteor/ostrio:flow-router-extra` (`Router` type). Route / group options use `title`, `titlePrefix` as in the [API](#api) section.
+
+```ts
+import { FlowRouter } from 'meteor/ostrio:flow-router-extra';
+import { FlowRouterTitle } from 'meteor/ostrio:flow-router-title';
+
+const titles = new FlowRouterTitle(FlowRouter);
+titles.set('My title');
 ```
 
 ## Related Packages
