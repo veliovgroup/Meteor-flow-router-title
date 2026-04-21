@@ -187,14 +187,17 @@ export class FlowRouterTitle {
           options: {}
         }
       };
-      _context.route.options.title = (self.router.notFound && self.router.notFound.title) ? self.router.notFound.title : void 0;
+      const _notFoundTitle = (self.router.notFound?.options?.title ?? self.router.notFound?.title);
+      _context.route.options.title = _notFoundTitle;
 
       if (!helpers.isEmpty(self.router._current)) {
         self.titleHandler(Object.assign({}, self.router._current, _context));
       } else {
         self.titleHandler(_context);
       }
-      _orig.apply(this, arguments);
+      if (helpers.isFunction(_orig)) {
+        _orig.apply(this, arguments);
+      }
     };
   }
 
