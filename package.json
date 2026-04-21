@@ -1,0 +1,23 @@
+{
+  "name": "ostrio-flow-router-title",
+  "private": true,
+  "types": "index.d.ts",
+  "scripts": {
+    "test:tsd": "tsd"
+  },
+  "devDependencies": {
+    "tsd": "^0.31.2"
+  },
+  "tsd": {
+    "compilerOptions": {
+      "lib": ["ES2022", "DOM"],
+      "strict": true,
+      "noEmit": true,
+      "moduleResolution": "node10",
+      "baseUrl": ".",
+      "paths": {
+        "meteor/ostrio:flow-router-extra": ["./tsd-stubs/flow-router-extra-shim.ts"]
+      }
+    }
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "preserveSymlinks": true,
+    "strict": true,
+    "noEmit": true,
+    "lib": ["ES2022", "DOM"],
+    "moduleResolution": "node10",
+    "baseUrl": ".",
+    "paths": {
+      "meteor/*": [
+        "node_modules/@types/meteor/*",
+        ".meteor/local/types/packages.d.ts"
+      ],
+      "meteor/ostrio:flow-router-extra": ["./tsd-stubs/flow-router-extra-shim.ts"]
+    }
+  },
+  "files": ["index.d.ts"]
+}
