@@ -57,7 +57,7 @@ const getParentPrefix = (group, context, args, _i = 0) => {
   const i = _i + 1;
   if (group) {
     if (group.options && group.options.titlePrefix) {
-      if ((context.route?.options?.title && i === 1) || i !== 1) {
+      if ((context && context.route && context.route.options && context.route.options.title && i === 1) || i !== 1) {
         let _gt = group.options.titlePrefix;
         if (helpers.isFunction(_gt)) {
           _gt = _gt.apply(context, args);
@@ -75,8 +75,12 @@ const getParentPrefix = (group, context, args, _i = 0) => {
 
 const applyGroupTitle = function (groupTitle, context, args) {
   let title = '';
-  const routeTitle = applyRouteTitle(context.route?.options?.title, context, args);
-  const groupTitlePrefix = getParentPrefix(((this.router._current?.route?.group) ? this.router._current.route.group : void 0), context, args);
+  const routeTitle = applyRouteTitle((context && context.route && context.route.options) ? context.route.options.title : void 0, context, args);
+  const groupTitlePrefix = getParentPrefix(
+    (this.router && this.router._current && this.router._current.route) ? this.router._current.route.group : void 0,
+    context,
+    args
+  );
 
   if (!routeTitle) {
     title = groupTitlePrefix + applyRouteTitle(groupTitle || this.defaultTitle || this.hardCodedTitle, context, args);
@@ -127,7 +131,7 @@ export class FlowRouterTitle {
 
         if (helpers.isString(result)) {
           self.title.set(result);
-          if (context?.context) {
+          if (context && context.context) {
             context.context.title = result;
           }
         }
@@ -149,9 +153,9 @@ export class FlowRouterTitle {
       const _context = Object.assign({}, context, { query: context.queryParams });
       const _arguments = [context.params, context.queryParams, data];
 
-      if (context.route?.group?.options) {
-        const _routeTitle = (context.route.options?.title) ? context.route.options.title : void 0;
-        const _groupTitle = (context.route.group.options?.title) ? context.route.group.options.title : void 0;
+      if (context.route && context.route.group && context.route.group.options) {
+        const _routeTitle = (context.route.options && context.route.options.title) ? context.route.options.title : void 0;
+        const _groupTitle = (context.route.group.options && context.route.group.options.title) ? context.route.group.options.title : void 0;
 
         if (helpers.isFunction(_routeTitle)) {
           this._reactivate(_routeTitle, _context, _arguments, applyGroupTitle.bind(this));
@@ -164,7 +168,7 @@ export class FlowRouterTitle {
         }
         _title = applyGroupTitle.call(this, _groupTitle, _context, _arguments);
       } else {
-        _title = (context.route.options?.title) ? context.route.options.title : (this.defaultTitle || this.hardCodedTitle);
+        _title = (context.route.options && context.route.options.title) ? context.route.options.title : (this.defaultTitle || this.hardCodedTitle);
         if (helpers.isFunction(_title)) {
           this._reactivate(_title, _context, _arguments);
         }
@@ -172,7 +176,7 @@ export class FlowRouterTitle {
 
       if (helpers.isString(_title)) {
         self.title.set(_title);
-        if (context?.context && helpers.isObject(context.context)) {
+        if (context && context.context && helpers.isObject(context.context)) {
           context.context.title = _title;
         }
       }
@@ -187,7 +191,12 @@ export class FlowRouterTitle {
           options: {}
         }
       };
-      const _notFoundTitle = (self.router.notFound?.options?.title ?? self.router.notFound?.title);
+      let _notFoundTitle;
+      if (self.router.notFound && self.router.notFound.options && helpers.has(self.router.notFound.options, 'title')) {
+        _notFoundTitle = self.router.notFound.options.title;
+      } else if (self.router.notFound && helpers.has(self.router.notFound, 'title')) {
+        _notFoundTitle = self.router.notFound.title;
+      }
       _context.route.options.title = _notFoundTitle;
 
       if (!helpers.isEmpty(self.router._current)) {
