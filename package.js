@@ -1,6 +1,6 @@
 Package.describe({
   name: 'ostrio:flow-router-title',
-  version: '3.5.0',
+  version: '3.5.1',
   summary: 'Set and update web page title via flow-router hooks',
   git: 'https://github.com/veliovgroup/Meteor-flow-router-title',
   documentation: 'README.md'
