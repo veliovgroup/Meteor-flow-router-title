@@ -10,6 +10,7 @@ if (Meteor.isServer) {
 const defaultTitleStr      = 'Default title';
 const defaultNewTitleStr   = 'Default NEW title';
 const defaultReactiveTitle = new ReactiveVar(defaultTitleStr);
+let defaultTitleTimer = null;
 
 FlowRouter.globals.push({
   title() {
@@ -20,8 +21,12 @@ FlowRouter.globals.push({
 FlowRouter.route('/', {
   name: 'index',
   action() {
-    Meteor.setTimeout(() => {
+    if (defaultTitleTimer) {
+      Meteor.clearTimeout(defaultTitleTimer);
+    }
+    defaultTitleTimer = Meteor.setTimeout(() => {
       defaultReactiveTitle.set(defaultNewTitleStr);
+      defaultTitleTimer = null;
     }, 50);
   }
 });
@@ -41,12 +46,22 @@ FlowRouter.route('/thirdPage/:something', {
 });
 
 Tinytest.addAsync('COMMON - Global Defaults', function (test, next) {
-  FlowRouter.go('/');
-  test.equal(document.title, defaultTitleStr);
+  FlowRouter.go('secondPage');
   setTimeout(() => {
-    test.equal(document.title, defaultNewTitleStr);
-    next();
-  }, 100);
+    if (defaultTitleTimer) {
+      Meteor.clearTimeout(defaultTitleTimer);
+      defaultTitleTimer = null;
+    }
+    defaultReactiveTitle.set(defaultTitleStr);
+    FlowRouter.go('/');
+    setTimeout(() => {
+      test.equal(document.title, defaultTitleStr);
+      setTimeout(() => {
+        test.equal(document.title, defaultNewTitleStr);
+        next();
+      }, 100);
+    }, 25);
+  }, 25);
 });
 
 Tinytest.addAsync('COMMON - Title - String', function (test, next) {

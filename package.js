@@ -1,6 +1,6 @@
 Package.describe({
   name: 'ostrio:flow-router-title',
-  version: '3.5.1',
+  version: '3.5.2',
   summary: 'Set and update web page title via flow-router hooks',
   git: 'https://github.com/veliovgroup/Meteor-flow-router-title',
   documentation: 'README.md'
@@ -15,6 +15,6 @@ Package.onUse((api) => {
 });
 
 Package.onTest((api) => {
-  api.use(['tinytest', 'ecmascript', 'random', 'session', 'reactive-var', 'tracker', 'ostrio:flow-router-extra@3.13.0'], 'client');
+  api.use(['tinytest', 'ecmascript', 'random', 'session', 'reactive-var', 'tracker', 'ostrio:flow-router-extra@3.14.0'], 'client');
   api.addFiles('tests/index.js', 'client');
 });
